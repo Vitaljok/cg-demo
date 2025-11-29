@@ -1,0 +1,5 @@
+.vscode
+.pyenv
+__pycache__
+
+build

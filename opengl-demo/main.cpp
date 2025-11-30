@@ -102,23 +102,36 @@ void runOpenGLDemo() {
   const std::vector<glm::vec3> vertices = {
       {-0.5, -0.5, 0},
       {0.5, -0.5, 0},
-      {0, 0.5, 0},
+      {0.5, 0.5, 0},
+      {-0.5, 0.5, 0},
   };
 
+  const std::vector<uint32_t> indices = {0, 1, 3, 1, 2, 3};
+
   // VAO - Vertex Array Object
-  // Stores vertex attribute configs and memory buffers to read them from
+  // Stores vertex attribute layouts and memory buffers to read them from
   GLuint vertexArray;
   glGenVertexArrays(1, &vertexArray);
   glBindVertexArray(vertexArray);
 
   // VBO - Vertex Buffer Object
-  // memory buffer
+  // memory buffer, vertex attributes
   GLuint vertexBuf;
   glGenBuffers(1, &vertexBuf);
   glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(),
                vertices.data(), GL_STATIC_DRAW);
 
+  // EBO - Element Buffer Object
+  // memory buffer, vertex indices
+  GLuint indexBuf;
+  glGenBuffers(1, &indexBuf);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuf);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(),
+               indices.data(), GL_STATIC_DRAW);
+
+  // Attribute layout
+  // location=0, size=3, type=float32, normalize=false, stride=3*float32, offset=0
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
   glEnableVertexAttribArray(0);
 
@@ -132,10 +145,12 @@ void runOpenGLDemo() {
     glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // wireframe mode
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glUseProgram(shaderProgram);
     glBindVertexArray(vertexArray);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
+    
     // swap and events
     glfwSwapBuffers(window);
     glfwPollEvents();

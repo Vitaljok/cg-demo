@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.23)
 project("CG Demo" LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -16,5 +16,7 @@ else()
   endif()
 endif()
 
+include(cmake/ShaderUtils.cmake)
 add_subdirectory(ext)
+add_subdirectory(shared)
 add_subdirectory(opengl-demo)

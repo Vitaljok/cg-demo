@@ -5,7 +5,10 @@
 #include <assert.h>
 #include <print>
 #include <iostream>
+#include <demo/utils.hpp>
+#include <glm/glm.hpp>
 #include <stdexcept>
+#include <vector>
 
 void windowResizeCb(GLFWwindow *window [[maybe_unused]], int width,
                     int height) {
@@ -28,16 +31,96 @@ void runOpenGLDemo() {
   glfwMakeContextCurrent(window);
 
   // Load OpenGL
-  int version = gladLoadGL(glfwGetProcAddress);
+  const int version = gladLoadGL(glfwGetProcAddress);
   if (version == 0) {
     throw std::runtime_error("Failed to initialize OpenGL context");
   }
   std::println("Loaded OpenGL {}.{}", GLAD_VERSION_MAJOR(version),
                GLAD_VERSION_MINOR(version));
 
-  // setup
+  // setup viewport
   glfwSetFramebufferSizeCallback(window, windowResizeCb);
   glViewport(0, 0, 1200, 800);
+
+  // shaders
+  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  {
+    auto source = readTextFile("assets/shaders/opengl-demo/demo.vert");
+    const char *src = source.c_str();
+
+    glShaderSource(vertexShader, 1, &src, NULL);
+    glCompileShader(vertexShader);
+
+    GLint success;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+      std::string info(512, 0);
+      glGetShaderInfoLog(vertexShader, 512, NULL, info.data());
+      throw std::runtime_error(
+          std::format("Vertex shader compilation failed\n{}", info));
+    }
+  }
+
+  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  {
+    auto source = readTextFile("assets/shaders/opengl-demo/demo.frag");
+    const char *src = source.c_str();
+
+    glShaderSource(fragmentShader, 1, &src, NULL);
+    glCompileShader(fragmentShader);
+
+    GLint success;
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+      std::string info(512, 0);
+      glGetShaderInfoLog(fragmentShader, 512, NULL, info.data());
+      throw std::runtime_error(
+          std::format("Fragment shader compilation failed\n{}", info));
+    }
+  }
+
+  GLuint shaderProgram = glCreateProgram();
+  {
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    GLint success;
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+      std::string info(512, 0);
+      glGetProgramInfoLog(shaderProgram, 512, NULL, info.data());
+      throw std::runtime_error(
+          std::format("Shader program linking failed\n{}", info));
+    }
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+  }
+
+  // geometry
+  const std::vector<glm::vec3> vertices = {
+      {-0.5, -0.5, 0},
+      {0.5, -0.5, 0},
+      {0, 0.5, 0},
+  };
+
+  // VAO - Vertex Array Object
+  // Stores vertex attribute configs and memory buffers to read them from
+  GLuint vertexArray;
+  glGenVertexArrays(1, &vertexArray);
+  glBindVertexArray(vertexArray);
+
+  // VBO - Vertex Buffer Object
+  // memory buffer
+  GLuint vertexBuf;
+  glGenBuffers(1, &vertexBuf);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(),
+               vertices.data(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+  glEnableVertexAttribArray(0);
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -48,6 +131,10 @@ void runOpenGLDemo() {
     // render
     glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(vertexArray);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     // swap and events
     glfwSwapBuffers(window);

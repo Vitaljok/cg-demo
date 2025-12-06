@@ -15,6 +15,11 @@ void windowResizeCb(GLFWwindow *window [[maybe_unused]], int width,
   glViewport(0, 0, width, height);
 }
 
+struct VertexData {
+  glm::vec3 pos;
+  glm::vec3 color;
+};
+
 void runOpenGLDemo() {
   // Initialize window
   glfwInit();
@@ -99,11 +104,11 @@ void runOpenGLDemo() {
   }
 
   // geometry
-  const std::vector<glm::vec3> vertices = {
-      {-0.5, -0.5, 0},
-      {0.5, -0.5, 0},
-      {0.5, 0.5, 0},
-      {-0.5, 0.5, 0},
+  const std::vector<VertexData> vertices = {
+      {{-0.5, -0.5, 0}, {1.0, 1.0, 1.0}},
+      {{0.5, -0.5, 0}, {1.0, 0.0, 0.0}},
+      {{0.5, 0.5, 0}, {0.0, 1.0, 0.0}},
+      {{-0.5, 0.5, 0}, {0.0, 0.0, 1.0}},
   };
 
   const std::vector<uint32_t> indices = {0, 1, 3, 1, 2, 3};
@@ -131,9 +136,14 @@ void runOpenGLDemo() {
                indices.data(), GL_STATIC_DRAW);
 
   // Attribute layout
-  // location=0, size=3, type=float32, normalize=false, stride=3*float32, offset=0
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+  // location, size, type, normalize, stride, offset
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData),
+                        (void *)offsetof(VertexData, pos));
   glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData),
+                        (void *)offsetof(VertexData, color));
+  glEnableVertexAttribArray(1);
 
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -146,11 +156,20 @@ void runOpenGLDemo() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // wireframe mode
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+
+    // use shader
     glUseProgram(shaderProgram);
+
+    // update the uniform
+    float ts = glfwGetTime();
+    float value = sin(ts) / 2.0f + 0.5f;
+    glUniform1f(0, value);
+
+    // draw
     glBindVertexArray(vertexArray);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
-    
+
     // swap and events
     glfwSwapBuffers(window);
     glfwPollEvents();

@@ -1,5 +1,6 @@
 add_executable(opengl-demo
     main.cpp
+    shader.hpp
     shader.cpp
 )
 
@@ -14,4 +15,5 @@ target_link_libraries(opengl-demo
     glfw::glfw
     glm::glm
     demo::shared
+    stb::stb
 )

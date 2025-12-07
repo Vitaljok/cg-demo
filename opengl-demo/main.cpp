@@ -7,6 +7,7 @@
 #include <iostream>
 #include <demo/utils.hpp>
 #include <glm/glm.hpp>
+#include <stb_image.h>
 #include <stdexcept>
 #include <vector>
 
@@ -20,6 +21,7 @@ void windowResizeCb(GLFWwindow *window [[maybe_unused]], int width,
 struct VertexData {
   glm::vec3 pos;
   glm::vec3 color;
+  glm::vec2 uv;
 };
 
 void runOpenGLDemo() {
@@ -54,12 +56,62 @@ void runOpenGLDemo() {
       {Shader(GL_VERTEX_SHADER, "assets/shaders/opengl-demo/demo.vert"),
        Shader(GL_FRAGMENT_SHADER, "assets/shaders/opengl-demo/demo.frag")});
 
+  // textures
+  GLuint woodTexture;
+  {
+    int width, height, nChannels;
+    uint8_t *pixels = stbi_load("assets/textures/old_wood.jpg", &width,
+                                &height, &nChannels, 0);
+    if (!pixels) {
+      throw std::runtime_error("Failed to load texture image");
+    }
+    glGenTextures(1, &woodTexture);
+    glBindTexture(GL_TEXTURE_2D, woodTexture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                 GL_UNSIGNED_BYTE, pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(pixels);
+  }
+
+  GLuint smileTexture;
+  {
+    int width, height, nChannels;
+    stbi_set_flip_vertically_on_load(true);
+    uint8_t *pixels = stbi_load("assets/textures/smile_sunglasses.png",
+                                &width, &height, &nChannels, 0);
+    if (!pixels) {
+      throw std::runtime_error("Failed to load texture image");
+    }
+    glGenTextures(1, &smileTexture);
+    glBindTexture(GL_TEXTURE_2D, smileTexture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(pixels);
+  }
+
   // geometry
   const std::vector<VertexData> vertices = {
-      {{-0.5, -0.5, 0}, {1.0, 1.0, 1.0}},
-      {{0.5, -0.5, 0}, {1.0, 0.0, 0.0}},
-      {{0.5, 0.5, 0}, {0.0, 1.0, 0.0}},
-      {{-0.5, 0.5, 0}, {0.0, 0.0, 1.0}},
+      {{-0.5, -0.5, 0}, {1.0, 1.0, 1.0}, {0.0, 0.0}},
+      {{0.5, -0.5, 0}, {1.0, 0.0, 0.0}, {1.0, 0.0}},
+      {{0.5, 0.5, 0}, {0.0, 1.0, 0.0}, {1.0, 1.0}},
+      {{-0.5, 0.5, 0}, {0.0, 0.0, 1.0}, {0.0, 1.0}},
   };
 
   const std::vector<uint32_t> indices = {0, 1, 3, 1, 2, 3};
@@ -96,6 +148,10 @@ void runOpenGLDemo() {
                         (void *)offsetof(VertexData, color));
   glEnableVertexAttribArray(1);
 
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData),
+                        (void *)offsetof(VertexData, uv));
+  glEnableVertexAttribArray(2);
+
   while (!glfwWindowShouldClose(window)) {
     // input
     if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
@@ -112,12 +168,20 @@ void runOpenGLDemo() {
     // use shader
     glUseProgram(shaderProgram);
 
-    // update the uniform
+    // update uniforms
     float ts = glfwGetTime();
     float value = sin(ts) / 2.0f + 0.5f;
     glUniform1f(0, value);
+    // texture unit ids
+    glUniform1i(1, 0); // location=1, unit=GL_TEXTURE0
+    glUniform1i(2, 1); // location=2, unit=GL_TEXTURE1
 
     // draw
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, woodTexture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, smileTexture);
+
     glBindVertexArray(vertexArray);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
 

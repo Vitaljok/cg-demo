@@ -7,11 +7,10 @@
 #include <iostream>
 #include <demo/utils.hpp>
 #include <glm/glm.hpp>
-#include <stb_image.h>
 #include <stdexcept>
-#include <vector>
 
 #include "shader.hpp"
+#include "texture.hpp"
 
 void windowResizeCb(GLFWwindow *window [[maybe_unused]], int width,
                     int height) {
@@ -57,54 +56,11 @@ void runOpenGLDemo() {
        Shader(GL_FRAGMENT_SHADER, "assets/shaders/opengl-demo/demo.frag")});
 
   // textures
-  GLuint woodTexture;
-  {
-    int width, height, nChannels;
-    uint8_t *pixels = stbi_load("assets/textures/old_wood.jpg", &width,
-                                &height, &nChannels, 0);
-    if (!pixels) {
-      throw std::runtime_error("Failed to load texture image");
-    }
-    glGenTextures(1, &woodTexture);
-    glBindTexture(GL_TEXTURE_2D, woodTexture);
+  Texture woodTexture("assets/textures/old_wood.jpg", GL_RGB);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(pixels);
-  }
-
-  GLuint smileTexture;
-  {
-    int width, height, nChannels;
-    stbi_set_flip_vertically_on_load(true);
-    uint8_t *pixels = stbi_load("assets/textures/smile_sunglasses.png",
-                                &width, &height, &nChannels, 0);
-    if (!pixels) {
-      throw std::runtime_error("Failed to load texture image");
-    }
-    glGenTextures(1, &smileTexture);
-    glBindTexture(GL_TEXTURE_2D, smileTexture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(pixels);
-  }
+  Texture smileTexture("assets/textures/smile_sunglasses.png", GL_RGBA);
+  glBindTexture(GL_TEXTURE_2D, smileTexture);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
   // geometry
   const std::vector<VertexData> vertices = {

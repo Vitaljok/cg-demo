@@ -10,6 +10,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include "shader.hpp"
+
 void windowResizeCb(GLFWwindow *window [[maybe_unused]], int width,
                     int height) {
   glViewport(0, 0, width, height);
@@ -48,60 +50,9 @@ void runOpenGLDemo() {
   glViewport(0, 0, 1200, 800);
 
   // shaders
-  GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  {
-    auto source = readTextFile("assets/shaders/opengl-demo/demo.vert");
-    const char *src = source.c_str();
-
-    glShaderSource(vertexShader, 1, &src, NULL);
-    glCompileShader(vertexShader);
-
-    GLint success;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-      std::string info(512, 0);
-      glGetShaderInfoLog(vertexShader, 512, NULL, info.data());
-      throw std::runtime_error(
-          std::format("Vertex shader compilation failed\n{}", info));
-    }
-  }
-
-  GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  {
-    auto source = readTextFile("assets/shaders/opengl-demo/demo.frag");
-    const char *src = source.c_str();
-
-    glShaderSource(fragmentShader, 1, &src, NULL);
-    glCompileShader(fragmentShader);
-
-    GLint success;
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-      std::string info(512, 0);
-      glGetShaderInfoLog(fragmentShader, 512, NULL, info.data());
-      throw std::runtime_error(
-          std::format("Fragment shader compilation failed\n{}", info));
-    }
-  }
-
-  GLuint shaderProgram = glCreateProgram();
-  {
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    GLint success;
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-      std::string info(512, 0);
-      glGetProgramInfoLog(shaderProgram, 512, NULL, info.data());
-      throw std::runtime_error(
-          std::format("Shader program linking failed\n{}", info));
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-  }
+  ShaderProgram shaderProgram(
+      {Shader(GL_VERTEX_SHADER, "assets/shaders/opengl-demo/demo.vert"),
+       Shader(GL_FRAGMENT_SHADER, "assets/shaders/opengl-demo/demo.frag")});
 
   // geometry
   const std::vector<VertexData> vertices = {
@@ -156,7 +107,7 @@ void runOpenGLDemo() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // wireframe mode
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // use shader
     glUseProgram(shaderProgram);

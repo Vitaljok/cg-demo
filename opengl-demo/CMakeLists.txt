@@ -1,5 +1,6 @@
 add_executable(opengl-demo
     main.cpp
+    shader.cpp
 )
 
 add_shaders(opengl-demo

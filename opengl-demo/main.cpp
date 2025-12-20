@@ -7,6 +7,8 @@
 #include <iostream>
 #include <demo/utils.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 
 #include "shader.hpp"
@@ -131,6 +133,12 @@ void runOpenGLDemo() {
     // texture unit ids
     glUniform1i(1, 0); // location=1, unit=GL_TEXTURE0
     glUniform1i(2, 1); // location=2, unit=GL_TEXTURE1
+    // transform matrix
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(sin(ts) * 0.75f, 0.0f, 0.0f));
+    trans = glm::scale(trans, glm::vec3(cos(ts) / 3.0 + 0.5f));
+    trans = glm::rotate(trans, ts, glm::vec3(0.0f, 0.0f, 1.0f));
+    glUniformMatrix4fv(3, 1, GL_FALSE, glm::value_ptr(trans));
 
     // draw
     glActiveTexture(GL_TEXTURE0);

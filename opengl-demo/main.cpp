@@ -25,6 +25,15 @@ struct VertexData {
   glm::vec2 uv;
 };
 
+enum Uniforms {
+  value = 0,
+  texture0 = 1,
+  texture1 = 2,
+  model = 3,
+  view = 4,
+  projection = 5,
+};
+
 void runOpenGLDemo() {
   // Initialize window
   glfwInit();
@@ -129,16 +138,26 @@ void runOpenGLDemo() {
     // update uniforms
     float ts = glfwGetTime();
     float value = sin(ts) / 2.0f + 0.5f;
-    glUniform1f(0, value);
+    glUniform1f(Uniforms::value, value);
     // texture unit ids
-    glUniform1i(1, 0); // location=1, unit=GL_TEXTURE0
-    glUniform1i(2, 1); // location=2, unit=GL_TEXTURE1
-    // transform matrix
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(sin(ts) * 0.75f, 0.0f, 0.0f));
-    trans = glm::scale(trans, glm::vec3(cos(ts) / 3.0 + 0.5f));
-    trans = glm::rotate(trans, ts, glm::vec3(0.0f, 0.0f, 1.0f));
-    glUniformMatrix4fv(3, 1, GL_FALSE, glm::value_ptr(trans));
+    glUniform1i(Uniforms::texture0, 0);
+    glUniform1i(Uniforms::texture1, 1);
+    // transform matrices
+    glm::mat4 model = glm::mat4(1.0f);
+    model =
+        glm::rotate(model, glm::radians(-75.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, ts, glm::vec3(0.0f, 0.0f, 1.0f));
+
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, -0.5f, -3.0f));
+
+    glm::mat4 projection = glm::perspective(
+        glm::radians(45.0f), (float)1200 / (float)800, 0.1f, 100.0f);
+
+    glUniformMatrix4fv(Uniforms::model, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(Uniforms::view, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(Uniforms::projection, 1, GL_FALSE,
+                       glm::value_ptr(projection));
 
     // draw
     glActiveTexture(GL_TEXTURE0);

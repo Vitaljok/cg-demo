@@ -4,13 +4,15 @@ layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aColor;
 layout(location = 2) in vec2 aUV;
 
-layout(location = 3) uniform mat4 transform;
+layout(location = 3) uniform mat4 model;
+layout(location = 4) uniform mat4 view;
+layout(location = 5) uniform mat4 projection;
 
 layout(location = 0) out vec3 vertexColor;
 layout(location = 1) out vec2 uv;
 
 void main() {
-  gl_Position = transform * vec4(aPos.xyz, 1.0);
+  gl_Position = projection * view * model * vec4(aPos.xyz, 1.0);
   vertexColor = aColor;
   uv = aUV;
 }

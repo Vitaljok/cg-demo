@@ -18,4 +18,5 @@ target_link_libraries(opengl-demo
     glm::glm
     demo::shared
     stb::stb
+    assimp::assimp
 )

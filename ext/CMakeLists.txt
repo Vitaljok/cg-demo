@@ -29,7 +29,6 @@ FetchContent_Declare(
   GIT_TAG        f1c79c02822848a9bed4315b12c8c8f3761e1296
   GIT_SHALLOW    TRUE
 )
-
 FetchContent_MakeAvailable(stb)
 
 add_library(stb 
@@ -50,3 +49,17 @@ target_include_directories(glad
     glad/include
 )
 add_library(glad::glad ALIAS glad)
+
+# Assimp
+FetchContent_Declare(
+  assimp
+  GIT_REPOSITORY https://github.com/assimp/assimp.git
+  GIT_TAG        v6.0.2
+  GIT_SHALLOW    TRUE
+)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF)
+set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT OFF)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON)
+set(ASSIMP_BUILD_TESTS OFF)
+FetchContent_MakeAvailable(assimp)
+target_compile_options(assimp PUBLIC -w)

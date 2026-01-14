@@ -13,5 +13,5 @@ void main() {
   vec4 clrTex1 = texture(tex1, uv);
   vec4 clrTex2 = texture(tex2, uv);
   vec4 clrVtx = vec4(vertexColor, 1.0f);
-  fragColor = mix(clrTex1 * clrVtx, clrTex2, value);
+  fragColor = mix(clrTex1, clrTex2, clamp(value, 0, 1));
 }

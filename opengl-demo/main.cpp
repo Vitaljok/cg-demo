@@ -2,14 +2,15 @@
 // glad before glfw
 #include <GLFW/glfw3.h>
 
-#include <assert.h>
-#include <print>
-#include <iostream>
 #include <array>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include <demo/utils.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <print>
 #include <stdexcept>
 
 #include "shader.hpp"
@@ -74,26 +75,42 @@ void runOpenGLDemo() {
        Shader(GL_FRAGMENT_SHADER, "assets/shaders/opengl-demo/demo.frag")});
 
   // textures
-  Texture woodTexture("assets/textures/old_wood.jpg", GL_RGB);
-
-  Texture smileTexture("assets/textures/smile_sunglasses.png", GL_RGBA);
-  glBindTexture(GL_TEXTURE_2D, smileTexture);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  Texture dayTexture("assets/textures/keep_baked_day.png", GL_RGB);
+  Texture nightTexture("assets/textures/keep_baked_night.png", GL_RGB);
 
   // geometry
-  const std::vector<VertexData> vertices = {
-      {{-0.5, +0.0, -0.5}, {1.0, 1.0, 1.0}, {0.0, 0.0}},
-      {{+0.5, +0.0, +0.5}, {1.0, 0.0, 0.0}, {1.0, 0.0}},
-      {{-0.5, +1.0, +0.5}, {0.0, 1.0, 0.0}, {1.0, 1.0}},
-      {{+0.5, +1.0, -0.5}, {0.0, 0.0, 1.0}, {0.0, 1.0}},
-  };
+  Assimp::Importer importer;
+  auto scene =
+      importer.ReadFile("assets/meshes/keep.obj", aiProcess_Triangulate);
 
-  const std::vector<uint32_t> indices = {0, 1, 2, 0, 3, 2, 0, 3, 1, 2, 3, 1};
+  if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
+      !scene->mRootNode) {
+    throw std::runtime_error(
+        std::format("Failed to load mesh: {}", importer.GetErrorString()));
+  }
 
-  std::array objPositions = {
-      glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-2.0f, 2.0f, -5.0f),
-      glm::vec3(+3.0f, -2.0f, -5.0f), glm::vec3(-3.0f, -1.0f, -10.0f),
-      glm::vec3(+5.0f, 3.0f, -10.0f)};
+  auto mesh = scene->mMeshes[0]; // for now assume single mesh model
+  std::vector<VertexData> vertices;
+
+  for (size_t i = 0; i < mesh->mNumVertices; i++) {
+    auto vtx = mesh->mVertices[i];
+    VertexData vdata;
+    vdata.pos = {vtx.x, vtx.y, vtx.z};
+    if (mesh->mTextureCoords[0]) {
+      auto uvs = mesh->mTextureCoords[0][i];
+      vdata.uv = {uvs.x, uvs.y};
+    }
+    vertices.push_back(vdata);
+  }
+
+  std::vector<uint32_t> indices;
+  for (size_t i = 0; i < mesh->mNumFaces; i++) {
+    auto face = mesh->mFaces[i];
+    for (size_t j = 0; j < face.mNumIndices; j++)
+      indices.push_back(face.mIndices[j]);
+  }
+
+  importer.FreeScene();
 
   // VAO - Vertex Array Object
   // Stores vertex attribute layouts and memory buffers to read them from
@@ -149,21 +166,22 @@ void runOpenGLDemo() {
 
     // uniforms
     float ts = glfwGetTime();
-    float value = sin(ts) / 2.0f + 0.5f;
-    glUniform1f(Uniforms::value, value);
+    float dayNight = sin(ts / 2.0f) * 5.0f + 0.5f;
+    glUniform1f(Uniforms::value, dayNight);
 
     // textures
     glUniform1i(Uniforms::texture0, 0); // unit id=0
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, woodTexture);
+    glBindTexture(GL_TEXTURE_2D, dayTexture);
 
     glUniform1i(Uniforms::texture1, 1); // unit id=1
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, smileTexture);
+    glBindTexture(GL_TEXTURE_2D, nightTexture);
 
     // transform matrices
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, -0.5f, -3.0f));
+    glm::mat4 view =
+        glm::lookAt(glm::vec3(0.0f, 20.0f, 30.0f), glm::vec3(0.0f, 5.0f, 0.0f),
+                    glm::vec3(0.0f, 1.0f, 0.0f));
     glUniformMatrix4fv(Uniforms::view, 1, GL_FALSE, glm::value_ptr(view));
 
     glm::mat4 projection = glm::perspective(
@@ -175,14 +193,10 @@ void runOpenGLDemo() {
     // draw
     glBindVertexArray(vertexArray);
 
-    for (size_t i = 0; i < objPositions.size(); i++) {
-      glm::mat4 model = glm::mat4(1.0f);
-      model = glm::translate(model, objPositions[i]);
-      model = glm::rotate(model, ts + glm::radians(i * 20.0f),
-                          glm::vec3(0.0f, 1.0f, 0.0f));
-      glUniformMatrix4fv(Uniforms::model, 1, GL_FALSE, glm::value_ptr(model));
-      glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
-    }
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, ts, glm::vec3(0.0f, 1.0f, 0.0f));
+    glUniformMatrix4fv(Uniforms::model, 1, GL_FALSE, glm::value_ptr(model));
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
 
     // swap and events
     glfwSwapBuffers(window);

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200"
+   height="200"
+   viewBox="0 0 200.00002 200"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker3"
+       refX="0"
+       refY="0"
+       orient="auto"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path3" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Dot"
+       refX="0"
+       refY="0"
+       orient="auto"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         id="path17" />
+    </marker>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-168.42852,-132.75339)"
+     style="mix-blend-mode:normal">
+    <path
+       style="fill:none;stroke:#19aeff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;marker-start:url(#Dot);marker-mid:url(#marker3);marker-end:url(#marker2)"
+       d="m 206.26345,293.86291 61.81906,-122.46906 61.81906,122.46906 z"
+       id="path26" />
+    <text
+       xml:space="preserve"
+       style="font-size:15.3497px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#cccccc;stroke-width:2.65668;stroke-linejoin:round;stroke-dasharray:none"
+       x="188.66687"
+       y="315.18976"
+       id="text3"><tspan
+         id="tspan3"
+         x="188.66687"
+         y="315.18976"
+         style="stroke-width:2.65668">0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15.3497px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';mix-blend-mode:normal;fill:#cccccc;stroke-width:2.65668;stroke-linejoin:round;stroke-dasharray:none"
+       x="332.83075"
+       y="315.21225"
+       id="text3-5"><tspan
+         id="tspan3-0"
+         x="332.83075"
+         y="315.21225"
+         style="stroke-width:2.65668">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15.3497px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';fill:#cccccc;stroke-width:2.65668;stroke-linejoin:round;stroke-dasharray:none"
+       x="263.08914"
+       y="159.2935"
+       id="text4"><tspan
+         id="tspan4"
+         x="263.08914"
+         y="159.2935"
+         style="stroke-width:2.65668">2</tspan></text>
+  </g>
+</svg>

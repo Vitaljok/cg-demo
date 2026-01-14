@@ -1,0 +1,14 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [],
+    "ignoreWords": [],
+    "import": [],
+    "enabledFileTypes": {
+        "*": false,
+        "markdown": true
+    },
+}

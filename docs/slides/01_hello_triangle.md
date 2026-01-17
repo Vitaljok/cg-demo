@@ -63,9 +63,9 @@ Notes:
 </div>
 
 Notes:
-  - https://unity.com/blog/industry-customer-success-stories-2025-round-up
-  - https://www.unrealengine.com/en-US/blog/unreal-engine-5-1-is-now-available
-  - https://store.steampowered.com/app/3833380/DOGWALK__Supporter_Pack/
+- https://unity.com/blog/industry-customer-success-stories-2025-round-up
+- https://www.unrealengine.com/en-US/blog/unreal-engine-5-1-is-now-available
+- https://store.steampowered.com/app/3833380/DOGWALK__Supporter_Pack/
 
 --v--
 
@@ -91,9 +91,9 @@ Notes:
 - Explain general *principles and reasoning*, instead of providing only working source code.
 
 Notes: 
-  Understand what is happening behind the scenes in "other" 3D software.
+- Understand what is happening behind the scenes in "other" 3D software.
 
-  Use online resources, but update/reorganize them for better clarity.
+- Use online resources, but update/reorganize them for better clarity.
 
 --v--
 
@@ -126,10 +126,9 @@ start(( ))
 ```
 
 Notes:
-  Learn 3D graphics basics in OpenGL.
-  
-  Then switch to Vulkan, repeat the same basics
-  and continue with more interesting topics.
+- Learn 3D graphics basics in OpenGL.
+- Then switch to Vulkan, repeat the same basics
+and continue with more interesting topics.
 
 --v--
 
@@ -142,12 +141,12 @@ Notes:
 
 --s--
 
-## 3D rendering process
+## Rendering process
 
 ![](img/3D_to_pixels.svg)
 
 Notes: 
-  Represent 3D world as 2D image (colored pixels) and maybe show it on screen.
+Represent 3D world as 2D image (colored pixels) and maybe show it on screen.
 
 --v--
 
@@ -162,8 +161,8 @@ for (int x = 0; x < image.width; x++) {
 ```
 
 Notes:
-  `getPixelColor` implements some sort of rendering algorithm.
-  Simplistic, stylized, cartoon shading, photorealistic, ray tracing, etc.
+- `getPixelColor` implements some sort of rendering algorithm.
+- Simplistic, stylized, cartoon shading, photorealistic, ray tracing, etc.
 
 --v--
 
@@ -171,7 +170,7 @@ Notes:
 <!-- .element class="r-stretch" -->
 
 Notes:
-- Simulates light's physical behavior (ray tracing)
+Simulates light's physical behavior (ray tracing)
 
 --v--
 
@@ -194,7 +193,7 @@ Render time: ~15 minutes
 --cols--
 
 Notes:
-- Modern resolutions, huge amounts of processing
+Modern resolutions, huge amounts of processing
 
 --v--
 
@@ -229,7 +228,6 @@ cpu(:sunglasses: CPU)
 cpu <---> Disks["fa:fa-hdd Disks"]
 cpu <---> Memory["fa:fa-memory Memory"]
 cpu <---> Peripherals["fa:fa-mouse Peripherals"]
-cpu <---> Sound["fa:fa-volume-high Sound"]
 cpu <---> Network["fa:fa-network-wired Network"]
 
 gpu(:flushed: GPU)
@@ -242,11 +240,11 @@ class gpu large;
 <!-- .element class="full-width" -->
 
 Notes:
-  - CPU is universal processing unit, works with other devices, 
-    features interrupts, complex flows, etc.
-  - GPU is specialized for graphics/compute pipelines, works with bytes (memory).
-  - Can be integrated with main CPU (e.g. laptops)
-  - CPU: 4-16 cores, GPU: 4-16k cores
+- CPU is universal processing unit, works with other devices, 
+  features interrupts, complex flows, etc.
+- GPU is specialized for graphics/compute pipelines, works with bytes (memory).
+- Can be integrated with main CPU (e.g. laptops)
+- CPU: 4-16 cores, GPU: 4-16k cores
 
 --v--
 
@@ -286,14 +284,13 @@ class vertex,fragment programmable;
 <!-- .element class="full-width" -->
 
 Notes:
-  - Simplified view, modern pipelines are much complex.
-  - Sequence of operations, transform inputs (vertices, textures) to  the pixels.
-  - Input assembler extracts raw vertex data from buffers.
-  - Vertex shader runs for every vertex (usually applies transforms).
-  - Rasterization brakes primitive into fragments.
-  - Fragment shader runs for every fragment (usually determines its color).
-  - Color blending mixes fragments for one pixel.
-  
+- Simplified view, modern pipelines are more complex.
+- Sequence of operations, transform inputs (vertices, textures) to  the pixels.
+- Input assembler extracts raw vertex data from buffers.
+- Vertex shader runs for every vertex (usually applies transforms).
+- Rasterization brakes primitive into fragments.
+- Fragment shader runs for every fragment (usually determines its color).
+- Color blending mixes fragments for one pixel.  
 
 --v--
 
@@ -301,29 +298,56 @@ Notes:
 
 ![](img/vk_pipeline.svg)
 
---s--
+--v--
 
-## Diagrams
+## High level components
 
 ```mermaid
-graph LR;
-    A:::someclass --> B(fa:fa-user)
-    classDef someclass fill:#f96
+flowchart LR
 
-    C@{ shape: fork, label: "Fork or Join" };
+subgraph host[Host]
+  cpu[CPU]
+  ram[RAM]
 
-    D@{ icon: "fa-user", form: "square", label: "User Icon", pos: "t", h: 60 }
+  app[Application]
+  drv[Driver]
+end
+
+subgraph dev[Device]
+  gpu[GPU]
+  vram[VRAM]
+  pipe[Pipeline] --> frame[Frame]
+end
+
+cpu --- ram
+gpu --- vram
+app -- Graphics API ---> drv
+drv ---> pipe
+frame --> Screen
+
+style app stroke:orange;
+
 ```
+<!-- .element class="full-width" -->
 
---s--
+Notes:
+- Async architecture similar to *client-server*
+- Host: computer itself with OS and application
+- Device: dedicated board or logical component (e.g. integrated GPU in laptop)
 
+--v--
 
-# Some code
+## Graphics APIs
 
-```c++ [|1|2]
-glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
-glClear(GL_COLOR_BUFFER_BIT);
-```
+![](img/api_history.svg)
+
+Notes:
+- Started in 1990s with proprietary device specific APIs.
+- OpenGL: cross-language, cross-platform API for graphics.
+- Vulkan: a ground-up redesign of API, not backwards compatible with OpenGL.
+- DirectX: Microsoft's take on graphics API. 12th version offers low-level API.
+- Metal: Apple's graphics API
+- There are also APIs dedicated for compute.
 
 --s--
 
@@ -340,15 +364,3 @@ int main() {
   return EXIT_SUCCESS;
 }
 ```
-
---s--
-
-# Lists
-
-- one
-    - sub
-- two
-    - sub
-    - sub
-- three
-- four

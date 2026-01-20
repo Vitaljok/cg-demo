@@ -349,18 +349,375 @@ Notes:
 - Metal: Apple's graphics API
 - There are also APIs dedicated for compute.
 
---s--
+--v--
 
-## My long title
+## Working with API functions
+
+```mermaid
+flowchart LR
+
+subgraph app[Application]
+  hdr[Headers]
+  ldr[Loader]
+  main[Main logic]
+end
+
+subgraph drv[Driver]
+  api[API functions]
+end
+
+ldr <---> drv
+hdr --> main
+ldr --> main
+main --> api
+
+drv <--> Device
+
+```
+
+Notes:
+- API is part of driver and is usually implemented in `C` (due to compatibility).
+- Headers provide the signatures of the functions (names, parameters).
+- Loader helps to find binary implementation of the functions.
+- Application calls the API functions.
+- We will use `C++` for our project. There is bindings layer in case of other languages.
+
+--s-- 
+
+## Project tools
+
+> "Coding is basically just ifs and for loops" - John Carmack
+<!-- .element class="full-width" -->
+
+- C++23
+  - only ifs and loops, nothing fancy
+- decent C++ compiler
+  - Clang, MSVC, GCC
+- CMake for build management
+- decent IDE for syntax and autocomplete
+  - VS Code, neovim, VS, CLion, ...
+
+--v--
+
+## Project structure
+
+```
+git clone https://github.com/Vitaljok/cg-demo.git
+git checkout 01-window
+```
+
+```text
+cg-demo/ 
++-- CMakeLists.txt          (root CMake script)
++-- assets/                 (textures, models, shaders, etc) 
++-- cmake/                  (useful CMake scripts)
++-- shared/                 (useful utility functions)
++-- ext/                    (external libraries)
+    +-- CMakeLists.txt      
+    +-- glad/               
++-- opengl-demo/            (current demo project)
+    +-- CMakeLists.txt      
+    +-- main.cpp            
++-- vulkan-demo/            (maybe some day :)
+```
+
+--v--
+
+## CMake
+
+![](https://cmake.org/wp-content/uploads/2023/08/Single_Source_Build.png)
+<!-- .element class="r-stretch" -->
+
+Notes:
+- A tool to manage building of source code.
+- Generates modern build systems as well as project files for IDEs.
+
+--v--
+
+## Root CMake script
+
+```cmake
+# ./CMakeLists.txt
+cmake_minimum_required(VERSION 3.23)
+
+project("CG Demo" LANGUAGES CXX C)
+set(CMAKE_CXX_STANDARD 23)
+
+if (MSVC)
+  add_compile_options(/W4 /WX)
+else()
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+add_subdirectory(ext)
+add_subdirectory(opengl-demo)
+```
+
+--v--
+
+## External libraries: GLFW
+
+Simple multi-platform API for creating windows
+
+```cmake
+# ./ext/CMakeLists.txt
+
+Include(FetchContent)
+
+# GLFW
+FetchContent_Declare(
+  glfw
+  GIT_REPOSITORY https://github.com/glfw/glfw.git
+  GIT_TAG 3.4
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(glfw)
+
+add_library(glfw::glfw ALIAS glfw)
+
+```
+Notes:
+- There are many ways to add external libraries to the project, such as system-wide installation, binary distributions, git submodules, copy of source code, etc.
+- FetchContent automatically downloads and builds source code of the library.
+
+--v--
+
+## External libraries: GLAD
+
+Multi-Language OpenGL loader-generator ( https://gen.glad.sh/ )
+
+```cmake
+# ./ext/CMakeLists.txt
+
+# GLAD (downloaded from https://gen.glad.sh/)
+add_library(glad 
+    STATIC
+    glad/src/gl.c
+)
+target_include_directories(glad
+    PUBLIC
+    glad/include
+)
+add_library(glad::glad ALIAS glad)
+
+```
+
+Note:
+- Source code is included as a part of project.
+
+--v--
+
+## `glad/gl.h`
+
+```c++
+#define GL_CLEAR 0x1500
+#define GL_CLEAR_BUFFER 0x82B4
+#define GL_CLEAR_TEXTURE 0x9365
+
+...
+
+typedef void (GLAD_API_PTR *PFNGLCLEARPROC)(GLbitfield mask);
+GLAD_API_CALL PFNGLCLEARPROC glad_glClear;
+#define glClear glad_glClear
+```
+## `src/gl.c`
+
+```c++
+glad_glClear = (PFNGLCLEARPROC) load(userptr, "glClear");
+glad_glClearColor = (PFNGLCLEARCOLORPROC) load(userptr, "glClearColor");
+glad_glClearDepth = (PFNGLCLEARDEPTHPROC) load(userptr, "glClearDepth");
+
+```
+Note:
+- Function pointers and their lookup in driver.
+
+--v--
+
+## OpenGL project
+
+```cmake
+# ./opengl-demo/CMakeLists.txt
+
+add_executable(opengl-demo
+    main.cpp
+)
+
+target_link_libraries(opengl-demo
+    PRIVATE
+    glad::glad
+    glfw::glfw
+)
+```
+
+--v--
+
+## Handling errors
+
+
+--cols--
+
+```c++
+int main() {
+  ...
+  auto success = glDoSomething();
+  if (!success) {
+    std::println("Something went wrong.");
+    return -1;
+  }
+  ...
+}
+```
+<!-- .element class="full-width" -->
+
+--c--
+
+```c++
+void someDeepInternalFunction() {
+  ...
+  auto success = glDoSomething();
+  if (!success) {
+    std::println("Something went wrong.");
+    return; // <--- ???
+  }
+  ...
+}
+```
+<!-- .element class="full-width" -->
+--cols--
+
+Notes:
+- Repeating `println`.
+- Chain returns over call stack.
+
+--v--
+## Handling errors
+
+--cols--
 
 ```c++
 int main() {
   try {
     runOpenGLDemo();
   } catch (std::exception &ex) {
-    fmt::println("EXCEPTION: {}", ex.what());
+    std::println("EXCEPTION: {}", ex.what());
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
 }
 ```
+<!-- .element class="full-width" -->
+--c--
+
+```c++
+void someDeepInternalFunction() {
+  ...
+  auto success = glDoSomething();
+  if (!success) {
+    throw std::runtime_error(
+      "Something went wrong.");
+  }
+  ...
+}
+```
+<!-- .element class="full-width" -->
+--cols--
+
+--s--
+
+## 01 - Empty window
+
+![](img/01-window.png)
+<!-- .element class="r-stretch" -->
+
+--v--
+
+## Creating GLFW window
+
+```c++
+// Important: include GLAD before GLFW
+#include <glad/gl.h>
+
+#include <GLFW/glfw3.h>
+```
+
+```c++
+glfwInit();
+glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+GLFWwindow *window = glfwCreateWindow(1200, 800, "OpenGL Demo", nullptr, nullptr);
+glfwMakeContextCurrent(window);
+
+...
+
+glfwDestroyWindow(window);
+glfwTerminate();
+
+```
+
+Notes:
+- Include GLAD first, otherwise GLFW will load its own basic OpenGL header.
+- `glfwWindowHint` - we want OpenGL 4.6 Core profile.
+- `glfwMakeContextCurrent` - subsequent OpenGL calls will go to window context.
+
+--v--
+
+## OpenGL setup and drawing
+```c++
+const int version = gladLoadGL(glfwGetProcAddress);
+// setup
+glViewport(0, 0, 1200, 800);
+
+while (!glfwWindowShouldClose(window)) {  
+  // draw
+  glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+  
+  // present
+  glfwSwapBuffers(window);
+  glfwPollEvents();
+}
+```
+
+Notes:
+- `gladLoadGL` loads OpenGL functions.
+- "infinite" loop with drawing commands.
+- `glClear` fills framebuffer with color.
+- `glfwSwapBuffers` swaps back buffer.
+
+--v--
+
+## Handle window resize
+```c++
+void windowResizeCb(GLFWwindow *window, int width, int height) {
+  glViewport(0, 0, width, height);
+}
+
+glfwSetFramebufferSizeCallback(window, windowResizeCb);
+```
+
+## Read inputs
+```c++
+if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+  glfwSetWindowShouldClose(window, true);
+}
+```
+
+--s--
+
+## 02 - Hello triangle
+
+![](img/02-hello-triangle.png)
+<!-- .element class="r-stretch" -->
+
+--v--
+
+- OpenGL = FSM
+- Shaders
+  - Vertex shader
+  - Fragment shader
+  - Compiling
+  - Linking
+- Buffers
+  - Buffer Arrays

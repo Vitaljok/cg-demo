@@ -250,37 +250,7 @@ Notes:
 
 ## Graphics pipeline
 
-```mermaid
----
-config:
-  themeVariables:
-    edgeLabelBackground: 'transparent'
----
-graph LR;
-
-buffer 
-  ==> input 
-  ==> vertex 
-  ==> raster 
-  ==> fragment 
-  ==> color 
-  ==> framebuffer
-
-buffer@{shape: text, label: "Input buffer<br>(bytes)"}
-input@{img: "img/graphics_pipeline_input.svg", label: "Input assembler", constraint: "on", h: 200}
-vertex@{img: "img/graphics_pipeline_vertex.svg", label: "Vertex shader", constraint: "on", h: 200}
-raster@{img: "img/graphics_pipeline_raster.svg", label: "Rasterization", constraint: "on", h: 200}
-fragment@{img: "img/graphics_pipeline_fragment.svg", label: "Fragment shader", constraint: "on", h: 200}
-color@{img: "img/graphics_pipeline_color.svg", label: "Color blending", constraint: "on", h: 200}
-framebuffer@{shape: text, label: "Framebuffer<br>(bytes)"}
-
-classDef fixed stroke:green;
-classDef programmable stroke:orange;
-
-class input,raster,color fixed;
-class vertex,fragment programmable;
-
-```
+![](img/graphics_pipeline.svg)
 <!-- .element class="full-width" -->
 
 Notes:
@@ -406,19 +376,19 @@ git clone https://github.com/Vitaljok/cg-demo.git
 git checkout 01-window
 ```
 
-```text
+```cmake
 cg-demo/ 
-+-- CMakeLists.txt          (root CMake script)
-+-- assets/                 (textures, models, shaders, etc) 
-+-- cmake/                  (useful CMake scripts)
-+-- shared/                 (useful utility functions)
-+-- ext/                    (external libraries)
-    +-- CMakeLists.txt      
-    +-- glad/               
-+-- opengl-demo/            (current demo project)
-    +-- CMakeLists.txt      
-    +-- main.cpp            
-+-- vulkan-demo/            (maybe some day :)
++-- CMakeLists.txt        # root CMake script
++-- assets/               # textures, models, shaders, etc
++-- cmake/                # useful CMake scripts
++-- shared/               # useful utility functions
++-- ext/                  # external libraries
+    +-- CMakeLists.txt    
+    +-- glad/             
++-- opengl-demo/          # current demo project
+    +-- CMakeLists.txt    
+    +-- main.cpp          
++-- vulkan-demo/          # maybe some day :)
 ```
 
 --v--
@@ -461,7 +431,6 @@ Simple multi-platform API for creating windows
 
 ```cmake
 # ./ext/CMakeLists.txt
-
 Include(FetchContent)
 
 # GLFW
@@ -537,7 +506,6 @@ Note:
 
 ```cmake
 # ./opengl-demo/CMakeLists.txt
-
 add_executable(opengl-demo
     main.cpp
 )
@@ -646,7 +614,8 @@ glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-GLFWwindow *window = glfwCreateWindow(1200, 800, "OpenGL Demo", nullptr, nullptr);
+GLFWwindow *window = 
+      glfwCreateWindow(1200, 800, "OpenGL Demo", nullptr, nullptr);
 glfwMakeContextCurrent(window);
 
 ...
@@ -665,7 +634,7 @@ Notes:
 
 ## OpenGL setup and drawing
 ```c++
-const int version = gladLoadGL(glfwGetProcAddress);
+gladLoadGL(glfwGetProcAddress);
 // setup
 glViewport(0, 0, 1200, 800);
 
@@ -713,11 +682,370 @@ if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
 
 --v--
 
-- OpenGL = FSM
-- Shaders
-  - Vertex shader
-  - Fragment shader
-  - Compiling
-  - Linking
-- Buffers
-  - Buffer Arrays
+## OpenGL State Machine
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Focusrite_Console_02.jpg/1280px-Focusrite_Console_02.jpg)
+<!-- .element class="r-stretch" -->
+
+--v--
+
+## OpenGL State Machine (example)
+
+```c++
+glViewport(0, 0, 1200, 800);          // state
+glClearColor(0.2f, 0.2f, 0.3f, 1.0f); // state
+glClear(GL_COLOR_BUFFER_BIT);         // action
+
+glEnable(GL_DEPTH_TEST);              // state
+glDrawBuffer(...);                    // action
+
+glBindTexture(GL_TEXTURE_2D, 42);     // state
+glDrawBuffer(...);                    // action
+
+```
+
+Notes:
+- Similar to mixing console with a lot of knobs and switches.
+- Depending on internal state, the same input can produce different outputs.
+- Default values can vary between vendors.
+- "Draw" calls use whole state, not only recent changes.
+
+
+--s--
+
+## Input assembler
+
+![](img/graphics_pipeline.svg)
+
+- Provide vertex coordinates (bytes) as input
+- Build primitives from the coordinates (triangle)
+
+--v--
+
+## Normalized Device Coordinates
+
+![](img/ndc.svg)
+
+--v--
+
+## Input buffer
+
+![](img/input_buffer.svg)
+
+
+```c++
+// raw array
+const float vertices[] = {-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0};
+
+// collection of GLM structs
+const std::vector<glm::vec3> vertices = {
+    {-0.5, -0.5, 0.0},
+    { 0.5, -0.5, 0.0},
+    { 0.0,  0.5, 0.0},
+};
+```
+
+Notes:
+- input buffer will grow on later stages
+- structs are easier to work with
+- memory layout is the same
+
+--v--
+
+## Vertex Array Object (VAO)
+
+- Where to read input from? - memory buffers
+- How to interpret input? - vertex attribute description
+
+
+```c++
+// variable for VAO identifier
+GLuint vertexArray;
+// create the VAO
+glGenVertexArrays(1, &vertexArray);
+// activate the VAO
+glBindVertexArray(vertexArray);
+```
+
+--v--
+
+## Vertex Buffer Object (VBO)
+
+- Memory buffer in device VRAM for vertex data
+
+```c++
+// variable for buffer ID
+GLuint vertexBuf;
+// create memory buffer in device VRAM
+glGenBuffers(1, &vertexBuf);
+// activate buffer
+glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
+// upload bytes to the buffer
+// 3(vtx) x 3(attr) x 4(float) = 36 bytes
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(),
+              vertices.data(), GL_STATIC_DRAW);
+```
+
+Note:
+- the buffer will belong to previously activated VAO object
+
+--v--
+
+## Vertex attribute description
+
+```c++
+// enable attribute #0
+glEnableVertexAttribArray(0);
+
+// describe attribute #0
+// number of components: 3 (X, Y, Z)
+// data type for each component: GL_FLOAT
+// normalized: GL_FALSE - interpret directly as floats
+// byte offset between attributes: 3 * 4 = 12 bytes
+// offset of the first component of the first attribute: 0
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+```
+
+--v--
+
+## Vertex Array Object (all together)
+
+```c++
+// VAO - Vertex Array Object
+GLuint vertexArray;
+glGenVertexArrays(1, &vertexArray);
+glBindVertexArray(vertexArray);
+
+// VBO - Vertex Buffer Object
+GLuint vertexBuf;
+glGenBuffers(1, &vertexBuf);
+glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(),
+              vertices.data(), GL_STATIC_DRAW);
+
+glEnableVertexAttribArray(0);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+```
+
+--s--
+
+## Shaders
+
+![](img/graphics_pipeline.svg)
+
+- Run some logic *for each* vertex / fragment
+- Produce inputs for the next stages
+- GLSL (OpenGL Shading Language)
+
+--v--
+
+## Vertex shader
+
+```glsl
+#version 450 core
+
+// input #0 in VAO attributes
+layout(location = 0) in vec3 aPos;
+
+void main() {
+  // very complex transformation of coordinates
+  gl_Position = vec4(aPos.xyz, 1.0);
+}
+```
+
+Note:
+- Output `gl_Position` as (x,y,z,w) vector
+- `w` is perspective division
+
+--v--
+
+## Fragment shader
+
+```glsl
+#version 450 core
+
+// by default output #0 is shown on the framebuffer
+layout(location = 0) out vec4 fragColor;
+
+void main() {
+  // very complex color (RGBA) calculations 
+  fragColor = vec4(0.9, 0.5, 0.3, 1.0);
+}
+```
+--v--
+
+## Shader compilation
+
+```c++
+GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+const char *src = "...source of the shader...";
+glShaderSource(vertexShader, 1, &src, NULL);
+glCompileShader(vertexShader);
+
+GLint success;
+glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+if (!success) {
+  std::string info(512, 0);
+  glGetShaderInfoLog(vertexShader, 512, NULL, info.data());
+  throw std::runtime_error(
+      std::format("Vertex shader compilation failed\n{}", info));
+}
+```
+Note:
+- compilation happens at runtime
+
+--v--
+
+## Shader linking
+
+```c++
+GLuint shaderProgram = glCreateProgram();
+
+glAttachShader(shaderProgram, vertexShader);
+glAttachShader(shaderProgram, fragmentShader);
+glLinkProgram(shaderProgram);
+
+GLint success;
+glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+if (!success) {
+  std::string info(512, 0);
+  glGetProgramInfoLog(shaderProgram, 512, NULL, info.data());
+  throw std::runtime_error(
+      std::format("Shader program linking failed\n{}", info));
+}
+```
+
+--v--
+
+## Shader source
+
+```c++
+// awkward
+const char *src = "...source of the shader...";
+
+// read text file to string
+std::string source = readTextFile("assets/shaders/opengl-demo/demo.vert");
+// get raw pointer to C-string when needed
+const char *src = source.c_str();
+```
+
+--v--
+
+## File utilities
+
+```cmake
+# ./shared/CMakeLists.txt
+
+add_library(demo_shared 
+    STATIC
+    demo/utils.cpp
+)
+target_link_libraries(demo_shared)
+target_include_directories(demo_shared PUBLIC . )
+add_library(demo::shared ALIAS demo_shared)
+```
+
+```c++
+std::vector<uint8_t> readFile(const std::string &fileName);
+
+std::string readTextFile(const std::string &fileName);
+```
+
+--v--
+
+## Shader organization
+
+- Shaders are heavily dependant on C++ source
+  - input buffers
+  - attribute descriptions
+- Shaders are accessed at runtime 
+  - executable path
+- Shaders *can be* provided in binary format
+  - compiled offline into intermediate representation
+  - SPIR-V for Vulkan
+
+Note:
+- It is bad idea to mix sources and build artifacts.
+
+--v--
+
+## Shader organization
+
+--cols--
+
+```cmake
+# ./opengl-demo/CMakeLists.txt
+include(cmake/ShaderUtils.cmake)
+
+add_executable(opengl-demo
+    main.cpp
+)
+
+add_shaders(opengl-demo
+    demo.frag
+    demo.vert
+)
+```
+<!-- .element class="full-width" -->
+
+--c--
+
+```cmake
+cg-demo/ 
++-- assets/
+    +-- shaders/
+        +-- opengl-demo
+            +-- demo.frag  # asset files 
+            +-- demo.vert  # text or binary
++-- opengl-demo/
+    +-- CMakeLists.txt 
+    +-- demo.frag          # original
+    +-- demo.vert          # sources
+    +-- main.cpp
+``` 
+<!-- .element class="full-width" -->
+
+--cols--
+
+Notes:
+- Asset files are produced by build system.
+- Shaders can be compiled into SPIR-V
+
+--s--
+
+## Running pipeline
+
+![](img/graphics_pipeline.svg)
+
+--v--
+
+## Running pipeline
+
+```c++
+// setup VAO, shaders, etc.
+...
+
+while (!glfwWindowShouldClose(window)) {
+  ...
+  // activate program
+  glUseProgram(shaderProgram);
+  // activate VAO
+  glBindVertexArray(vertexArray);
+  // draw 3 vertices
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+  ...
+}
+```
+
+--v--
+
+## Hello, triangle! :wave:
+
+![](img/02-hello-triangle.png)
+<!-- .element class="r-stretch" -->
+
+--v--
+
+![](img/07-mesh.png)
+<!-- .element class="r-stretch" -->

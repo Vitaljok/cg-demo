@@ -1,6 +1,7 @@
 :root {
   /* --r-block-margin: 20px; */
   --r-heading-text-transform: none;
+  --r-code-font: "JetBrains Mono", monospace;
   /* --r-heading-margin: 0 0 20px 0; */
 }
 
@@ -29,9 +30,6 @@
     background-color: unset;
 }
 
-/* .reveal img {
-    margin: 0;
-} */
 
 .reveal .full-width {
     width: 100%;

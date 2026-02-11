@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        
+
+        <link rel="stylesheet" href="mkslides-assets\reveal-js/dist/reveal.css" />
+
+        
+            <link rel="stylesheet" href="mkslides-assets\reveal-js\dist\theme\black.css" />
+        
+        
+            <link rel="stylesheet" href="mkslides-assets\highlight-js-themes\atom-one-dark.css" />
+        
+
+        
+            
+        
+            
+                
+                    <link rel="stylesheet" href="extra.css" />
+                
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+                
+            
+        
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-markdown
+                
+                    data-separator="\s*--s--\s*"
+                
+                    data-separator-vertical="\s*--v--\s*"
+                
+                    data-charset="utf-8"
+                
+                >
+                    <!-- The markdown must be placed to the whole left to prevent indentation issues like https://github.com/MartenBE/mkslides/issues/52 -->
+                    <textarea data-template>
+
+                    </textarea>
+                </section>
+            </div>
+        </div>
+        <script src="mkslides-assets\reveal-js/dist/reveal.js"></script>
+        <script src="mkslides-assets\reveal-js/plugin/highlight/highlight.js"></script>
+        <script src="mkslides-assets\reveal-js/plugin/markdown/markdown.js"></script>
+        <script src="mkslides-assets\reveal-js/plugin/math/math.js"></script>
+        <script src="mkslides-assets\reveal-js/plugin/notes/notes.js"></script>
+        <script src="mkslides-assets\reveal-js/plugin/search/search.js"></script>
+        <script src="mkslides-assets\reveal-js/plugin/zoom/zoom.js"></script>
+
+        
+            
+                
+                    
+                        <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.min.js"></script>
+                    
+                
+            
+                
+            
+        
+
+        <script>
+            Reveal.initialize({
+                
+                    
+                        history: true,
+                    
+                        slideNumber: "h.v",
+                    
+                        width: 1280,
+                    
+                        height: 720,
+                    
+                        transition: "none",
+                    
+                        center: true,
+                    
+                        mermaid: {"theme": "dark"},
+                    
+                
+                plugins: [
+                    RevealMarkdown, // Must come before the other plugins so they can hook into the generated HTML.
+                    RevealHighlight,
+                    RevealMath.KaTeX,
+                    RevealNotes,
+                    RevealSearch,
+                    RevealZoom,
+
+                    
+                        
+                            
+                                RevealMermaid,
+                            
+                        
+                            
+                        
+                    
+                ],
+            });
+        </script>
+    </body>
+</html>

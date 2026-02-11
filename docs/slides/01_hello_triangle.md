@@ -85,6 +85,10 @@ Notes:
 - https://www.artstation.com/artwork/29Km5B
 --s--
 
+> "If you want to master something, teach it."<br> - Richard Feynman
+
+--v--
+
 ## Idea of seminars
 
 - Learn 3D graphics programming starting *from scratch*.
@@ -752,6 +756,33 @@ Notes:
 
 --v--
 
+## Data structures
+
+```mermaid
+graph BT
+
+vao[Vertex Array<br>Object]
+vbo[Vertex Buffer<br>Object]
+
+va0[Vertex<br>Attribute #0]
+va1[Vertex<br>Attribute #...]
+
+bytes@{ shape: doc, label: "Vertex coordinates<br>(bytes)" }
+desc0@{ shape: doc, label: "Description #0" }
+desc1@{ shape: doc, label: "Description #..." }
+
+vbo --> vao
+va0 --> vao
+va1 --> vao
+
+bytes --> vbo
+desc0 --> va0
+desc1 --> va1
+
+```
+
+--v--
+
 ## Vertex Array Object (VAO)
 
 - Where to read input from? - memory buffers
@@ -782,7 +813,7 @@ glGenBuffers(1, &vertexBuf);
 glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
 // upload bytes to the buffer
 // 3(vtx) x 3(attr) x 4(float) = 36 bytes
-glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(),
+glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]),
               vertices.data(), GL_STATIC_DRAW);
 ```
 

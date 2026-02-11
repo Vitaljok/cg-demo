@@ -1,5 +1,7 @@
 :root {
   /* --r-block-margin: 20px; */
+  --r-main-color: #ddd;
+  --r-heading-color: #eee;
   --r-heading-text-transform: none;
   --r-code-font: "JetBrains Mono", monospace;
   /* --r-heading-margin: 0 0 20px 0; */

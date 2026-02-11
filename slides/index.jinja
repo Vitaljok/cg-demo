@@ -1,0 +1,84 @@
+{% macro render_node(node) %}
+<li>
+    <a href="{{ node.identifier }}" target="_blank" title="View slides">{{ node.data }}</a>
+    (<a href="{{ node.identifier }}?showNotes=true" target="_blank" title="View slides with speaker notes">with
+        notes</a>
+    | <a href="{{ node.identifier }}?print-pdf&showNotes=separate-page" target="_blank" title="Download as PDF">PDF</a>
+    )
+</li>
+{% endmacro %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    {% if favicon %}
+    <link rel="icon" href="{{ favicon }}">
+    {% endif %}
+
+    {% if theme %}
+    <link rel="stylesheet" href="{{ theme }}" />
+    {% endif %}
+
+    <title>{{ title }}</title>
+</head>
+
+<body>
+    <main>
+        <h1>{{ title }}</h1>
+
+        <p>This project is an attempt to organize bits of information
+            about programming 3D graphics and present it to the general audience.
+            The materials are used during offline seminars and workshops.</p>
+
+        <p>The main idea is to learn 3D graphics programming from scratch,
+            explain general principles and reasoning instead of just providing
+            working examples.
+            The <a href="https://github.com/Vitaljok/cg-demo">source code</a> helps
+            to follow the materials and is organized in branches.</a>
+        </p>
+
+        <h2>Slides</h2>
+
+        <ol>
+            {% for node in navtree.get_node_children(navtree.tree.root) %}
+            <li>
+                <span>{{ node.data }}</span>
+
+                <a href="{{ node.identifier }}" target="_blank" title="View slides">Slides</a>
+                |
+                <a href="{{ node.identifier }}?showNotes=true" target="_blank"
+                    title="View slides with speaker notes">Slides with
+                    notes</a>
+                | <a href="{{ node.identifier }}?print-pdf&showNotes=separate-page" target="_blank"
+                    title="Download as PDF">PDF</a>
+
+            </li>
+            {% endfor %}
+            <li>...</li>
+        </ol>
+
+        <h2>References</h2>
+
+        <p>The materials are inspired by and largely based on online resources,
+            although some have been updated and reorganized for better clarity.</p>
+
+        <ul>
+            <li><a href="https://learnopengl.com/">https://learnopengl.com/</a></li>
+            <li><a href="https://vulkan-tutorial.com/">https://vulkan-tutorial.com/</a></li>
+            <li><a href="https://vkguide.dev/">https://vkguide.dev/</a></li>
+            <li><a href="https://howtovulkan.com/">https://howtovulkan.com/</a></li>
+        </ul>
+    </main>
+
+    <footer>
+        <p style="font-size: small;opacity: 0.5;margin-top: 3em;">
+            This page and slides built with <a href="https://martenbe.github.io/mkslides/" target="_blank">MkSlides</a>.
+        </p>
+    </footer>
+</body>
+
+</html>

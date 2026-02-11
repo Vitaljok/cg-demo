@@ -1,0 +1,47 @@
+:root {
+  /* --r-block-margin: 20px; */
+  --r-main-color: #ddd;
+  --r-heading-color: #eee;
+  --r-heading-text-transform: none;
+  --r-code-font: "JetBrains Mono", monospace;
+  /* --r-heading-margin: 0 0 20px 0; */
+}
+
+.cols {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 20px;
+}
+
+.accent {
+    color: #19aeff;
+}
+
+.red {
+    color: #dc0000;
+}
+
+/* workaround for label background for nodes with images */
+.flowchart g.label > foreignObject > div.labelBkg {
+    background-color: transparent !important;
+}
+
+.reveal .slide-number {
+    left: 8px;
+    right: unset;
+    background-color: unset;
+}
+
+
+.reveal .full-width {
+    width: 100%;
+}
+
+.reveal .full-width code.mermaid {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.reveal code.mermaid {
+    text-align: center;
+}

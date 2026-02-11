@@ -1,0 +1,5 @@
+__pycache__
+site
+
+# dummy file to make mkslides happy
+/index.css

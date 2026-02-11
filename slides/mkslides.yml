@@ -1,0 +1,31 @@
+revealjs:
+    width: 1280
+    height: 720    
+    transition: none
+    center: true
+    slideNumber: h.v
+    mermaid:
+        theme: dark
+index:
+    title: 3D Graphics Programming
+    template: index.jinja
+    theme: index.css
+    nav:
+        - "Hello triangle": 01_hello_triangle.md
+        # - "Lorem ipsum sit amet dolor": 02_lorem.md
+slides:
+    charset: utf-8
+    theme: black
+    highlight_theme: atom-one-dark
+    separator: \s*--s--\s*
+    separator_vertical: \s*--v--\s*
+    preprocess_script: preprocess_cols.py
+    title: example-title
+plugins:
+    - name: RevealMermaid
+      extra_javascript:
+        - https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.min.js
+    
+    - extra_css: 
+        - extra.css
+        - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css

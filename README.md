@@ -30,3 +30,12 @@ Executable should be started from the root folder of the repository. It looks fo
 cd path/to/source
 build\opengl-demo\opengl-demo.exe
 ```
+
+## Building slides
+
+Slides are created using `mkSlides` utility and relies on `reveal.js` library.
+
+```
+cd slides
+mkslides build -d ../docs src
+```

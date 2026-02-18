@@ -1,5 +1,6 @@
 .vscode
 .pyenv
+.cache
 __pycache__
 
 build

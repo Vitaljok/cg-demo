@@ -17,6 +17,8 @@ Vitalijs Komasilovs
 </div>
 
 Notes:
+DCCs are for making nice looking images and/or animations.
+
 - https://80.lv/articles/check-out-this-mind-blowing-hard-surface-3d-character-sculpt-made-in-zbrush
 - https://www.autodesk.com/products/maya/features
 - https://www.blender.org/
@@ -33,6 +35,8 @@ Notes:
 </div>
 
 Notes: 
+CADs are for precise design and schematic images
+
 - https://www.blender3darchitect.com/sketchup/sketchup-pro-2024-released-how-to-download/
 - https://bitfab.io/blog/fusion-360-3d-printing/
 - https://www.reddit.com/r/FreeCAD/comments/1nadauj/what_did_you_design_first_on_freecad/
@@ -48,6 +52,8 @@ Notes:
 </div>
 
 Notes:
+Usually calculations are more important, 3D is just for visualization.
+
 - https://pubs.rsna.org/doi/abs/10.1148/rg.2015140320
 - https://rheologic.net/services/wind-turbine-positioning/
 - https://wwwmpa.mpa-garching.mpg.de/galform/data_vis/
@@ -63,6 +69,8 @@ Notes:
 </div>
 
 Notes:
+Interactive user experience for various purposes (not only games).
+
 - https://unity.com/blog/industry-customer-success-stories-2025-round-up
 - https://www.unrealengine.com/en-US/blog/unreal-engine-5-1-is-now-available
 - https://store.steampowered.com/app/3833380/DOGWALK__Supporter_Pack/
@@ -80,9 +88,12 @@ Notes:
 </div>
 
 Notes:
+Some are true works of art, most are just casinos with nice pixels.
+
 - https://gamingbolt.com/new-witcher-3-wild-hunt-screenshots-promise-an-exciting-epic
 - https://www.artstation.com/artwork/5vRvwz
 - https://www.artstation.com/artwork/29Km5B
+
 --s--
 
 > "If you want to master something, teach it."<br> - Richard Feynman
@@ -95,13 +106,13 @@ Notes:
 - Explain general *principles and reasoning*, instead of providing only working source code.
 
 Notes: 
-- Understand what is happening behind the scenes in "other" 3D software.
+Understand what is happening behind the scenes in "other" 3D software.
 
-- Use online resources, but update/reorganize them for better clarity.
+Use online resources, but update/reorganize them for better clarity.
 
 --v--
 
-OpenGL
+### OpenGL
 
 ```mermaid
 graph LR
@@ -115,7 +126,7 @@ start(( ))
   --> etc[...]
 ```
 
-Vulkan
+### Vulkan
 
 ```mermaid
 graph LR
@@ -130,8 +141,9 @@ start(( ))
 ```
 
 Notes:
-- Learn 3D graphics basics in OpenGL.
-- Then switch to Vulkan, repeat the same basics
+Learn 3D graphics basics in OpenGL.
+
+Then switch to Vulkan, repeat the same basics
 and continue with more interesting topics.
 
 --v--
@@ -150,7 +162,7 @@ and continue with more interesting topics.
 ![](img/3D_to_pixels.svg)
 
 Notes: 
-Represent 3D world as 2D image (colored pixels) and maybe show it on screen.
+Transform representation of 3D world to 2D image (colored pixels) and maybe show it on screen.
 
 --v--
 
@@ -165,8 +177,9 @@ for (int x = 0; x < image.width; x++) {
 ```
 
 Notes:
-- `getPixelColor` implements some sort of rendering algorithm.
-- Simplistic, stylized, cartoon shading, photorealistic, ray tracing, etc.
+`getPixelColor` implements some sort of rendering algorithm.
+
+Simplistic, stylized, cartoon shading, photorealistic, ray tracing, etc.
 
 --v--
 
@@ -174,7 +187,7 @@ Notes:
 <!-- .element class="r-stretch" -->
 
 Notes:
-Simulates light's physical behavior (ray tracing)
+Simulates light's physical behavior (ray tracing).
 
 --v--
 
@@ -197,7 +210,7 @@ Render time: ~15 minutes
 --cols--
 
 Notes:
-Modern resolutions, huge amounts of processing
+Modern resolutions, huge amounts of processing, takes long time.
 
 --v--
 
@@ -219,8 +232,11 @@ Modern resolutions, huge amounts of processing
 --cols--
 
 Notes:
-- We aim for interactive user experience
-- Dedicated hardware is needed - GPUs
+We aim for interactive user experience.
+
+Work with higher level primitives instead of pixels.
+
+Offload processing to dedicated hardware - GPUs.
 
 --s--
 
@@ -244,11 +260,14 @@ class gpu large;
 <!-- .element class="full-width" -->
 
 Notes:
-- CPU is universal processing unit, works with other devices, 
-  features interrupts, complex flows, etc.
-- GPU is specialized for graphics/compute pipelines, works with bytes (memory).
-- Can be integrated with main CPU (e.g. laptops)
-- CPU: 4-16 cores, GPU: 4-16k cores
+CPU is universal processing unit, works with other devices, 
+features interrupts, complex flows, etc.
+
+GPU is specialized for graphics/compute pipelines, works with bytes (memory).
+
+Can be integrated with main CPU (e.g. laptops).
+
+CPU: 4-16 cores, GPU: 4-16k cores.
 
 --v--
 
@@ -258,13 +277,19 @@ Notes:
 <!-- .element class="full-width" -->
 
 Notes:
-- Simplified view, modern pipelines are more complex.
-- Sequence of operations, transform inputs (vertices, textures) to  the pixels.
+Bare minimum GPU implements graphics pipeline.
+
+Simplified view, modern pipelines are more complex.
+
+Sequence of operations, transform inputs to the colored pixels.
+
+Inputs are some higher level primitives, not pixels.
+
 - Input assembler extracts raw vertex data from buffers.
 - Vertex shader runs for every vertex (usually applies transforms).
 - Rasterization brakes primitive into fragments.
 - Fragment shader runs for every fragment (usually determines its color).
-- Color blending mixes fragments for one pixel.  
+- Color blending mixes fragments for one pixel.
 
 --v--
 
@@ -272,24 +297,27 @@ Notes:
 
 ![](img/vk_pipeline.svg)
 
+Notes:
+From Vulkan documentation
+
 --v--
 
-## High level components
+## System components
 
 ```mermaid
 flowchart LR
 
 subgraph host[Host]
-  cpu[CPU]
-  ram[RAM]
+  cpu["fa:fa-microchip CPU"]
+  ram["fa:fa-memory RAM"]
 
   app[Application]
   drv[Driver]
 end
 
 subgraph dev[Device]
-  gpu[GPU]
-  vram[VRAM]
+  gpu["fa:fa-microchip GPU"]
+  vram["fa:fa-memory VRAM"]
   pipe[Pipeline] --> frame[Frame]
 end
 
@@ -305,9 +333,13 @@ style app stroke:orange;
 <!-- .element class="full-width" -->
 
 Notes:
-- Async architecture similar to *client-server*
-- Host: computer itself with OS and application
-- Device: dedicated board or logical component (e.g. integrated GPU in laptop)
+Async architecture similar to *client-server*.
+
+Host: computer itself with OS and application.
+
+Device: dedicated board or logical component (e.g. integrated GPU in laptop).
+
+API: "language" for interacting with the driver.
 
 --v--
 
@@ -316,12 +348,17 @@ Notes:
 ![](img/api_history.svg)
 
 Notes:
-- Started in 1990s with proprietary device specific APIs.
-- OpenGL: cross-language, cross-platform API for graphics.
-- Vulkan: a ground-up redesign of API, not backwards compatible with OpenGL.
-- DirectX: Microsoft's take on graphics API. 12th version offers low-level API.
-- Metal: Apple's graphics API
-- There are also APIs dedicated for compute.
+Started in 1990s with proprietary device specific APIs.
+
+OpenGL: cross-language, cross-platform API for graphics.
+
+Vulkan: a ground-up redesign of API, not backwards compatible with OpenGL.
+
+DirectX: Microsoft's take on graphics API. 12th version offers low-level API.
+
+Metal: Apple's graphics API
+
+There are also APIs dedicated for compute.
 
 --v--
 
@@ -347,18 +384,26 @@ main --> api
 
 drv <--> Device
 
+style main stroke:orange;
+
 ```
 
 Notes:
-- API is part of driver and is usually implemented in `C` (due to compatibility).
-- Headers provide the signatures of the functions (names, parameters).
-- Loader helps to find binary implementation of the functions.
-- Application calls the API functions.
-- We will use `C++` for our project. There is bindings layer in case of other languages.
+API is a specification, driver "promises" to act according to it. Sometimes it "cheats" or "misbehaves".
+
+Actual API implementation is part of driver and is usually exposed as `C` functions (due to compatibility).
+
+Headers provide the signatures of the functions (names, parameters).
+
+Loader helps to locate binary implementation of the functions.
+
+Application calls the API functions.
+
+We will use `C++` for our project. There are binding layers in case of other languages.
 
 --s-- 
 
-## Project tools
+## Development tools
 
 > "Coding is basically just ifs and for loops" - John Carmack
 <!-- .element class="full-width" -->
@@ -368,17 +413,42 @@ Notes:
 - decent C++ compiler
   - Clang, MSVC, GCC
 - CMake for build management
-- decent IDE for syntax and autocomplete
+- IDE for syntax and autocomplete
   - VS Code, neovim, VS, CLion, ...
+
+Notes:
+C++23 because I like `std::println` :)
+
+--v--
+
+## Demo project 
+https://vitaljok.github.io/cg-demo/
+
+--cols--
+
+![](img/git-repo.png) <!-- .element style="margin:0" -->
+
+--c--
+
+
+```bash
+git clone https://github.com/Vitaljok/cg-demo.git
+cd cg-demo
+
+git checkout 01-window
+cmake -S . -B build 
+cmake --build build
+```
+--cols--
+
+Notes:
+Project web page contains slides and source code.
+
+The source code is organized in branches.
 
 --v--
 
 ## Project structure
-
-```
-git clone https://github.com/Vitaljok/cg-demo.git
-git checkout 01-window
-```
 
 ```cmake
 cg-demo/ 
@@ -389,11 +459,14 @@ cg-demo/
 +-- ext/                  # external libraries
     +-- CMakeLists.txt    
     +-- glad/             
-+-- opengl-demo/          # current demo project
++-- opengl-demo/          # current demo application
     +-- CMakeLists.txt    
     +-- main.cpp          
 +-- vulkan-demo/          # maybe some day :)
 ```
+
+Notes:
+Assets are files loaded by the application during runtime.
 
 --v--
 
@@ -403,8 +476,9 @@ cg-demo/
 <!-- .element class="r-stretch" -->
 
 Notes:
-- A tool to manage building of source code.
-- Generates modern build systems as well as project files for IDEs.
+A tool to manage building of source code.
+
+Generates modern build systems as well as project files for IDEs.
 
 --v--
 
@@ -418,7 +492,7 @@ project("CG Demo" LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 23)
 
 if (MSVC)
-  add_compile_options(/W4 /WX)
+  add_compile_options(/W4)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -431,7 +505,7 @@ add_subdirectory(opengl-demo)
 
 ## External libraries: GLFW
 
-Simple multi-platform API for creating windows
+Simple multi-platform library for creating windows
 
 ```cmake
 # ./ext/CMakeLists.txt
@@ -446,18 +520,24 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glfw)
 
-add_library(glfw::glfw ALIAS glfw)
+add_library(glfw::glfw ALIAS glfw)  # good practice to avoid collisions
 
 ```
 Notes:
-- There are many ways to add external libraries to the project, such as system-wide installation, binary distributions, git submodules, copy of source code, etc.
-- FetchContent automatically downloads and builds source code of the library.
+There are many ways to add external libraries to the project:
+- system-wide installation
+- binary distributions
+- git submodules
+- copy of source code
+- etc.
+
+`FetchContent` automatically downloads and builds source code of the library.
 
 --v--
 
 ## External libraries: GLAD
 
-Multi-Language OpenGL loader-generator ( https://gen.glad.sh/ )
+Multi-Language OpenGL loader-generator (https://gen.glad.sh/)
 
 ```cmake
 # ./ext/CMakeLists.txt
@@ -476,7 +556,9 @@ add_library(glad::glad ALIAS glad)
 ```
 
 Note:
-- Source code is included as a part of project.
+OpenGL header (list of functions and constants).
+
+Source code is included as a part of the project.
 
 --v--
 
@@ -502,11 +584,11 @@ glad_glClearDepth = (PFNGLCLEARDEPTHPROC) load(userptr, "glClearDepth");
 
 ```
 Note:
-- Function pointers and their lookup in driver.
+Function pointers and their lookup in driver.
 
 --v--
 
-## OpenGL project
+## OpenGL demo application
 
 ```cmake
 # ./opengl-demo/CMakeLists.txt
@@ -520,6 +602,9 @@ target_link_libraries(opengl-demo
     glfw::glfw
 )
 ```
+
+Notes:
+We are building executable from `main.cpp` and use previously defined libraries.
 
 --v--
 
@@ -558,8 +643,9 @@ void someDeepInternalFunction() {
 --cols--
 
 Notes:
-- Repeating `println`.
-- Chain returns over call stack.
+Repeating `println`.
+
+Chain returns over call stack.
 
 --v--
 ## Handling errors
@@ -594,14 +680,10 @@ void someDeepInternalFunction() {
 <!-- .element class="full-width" -->
 --cols--
 
+Notes:
+Better (maybe?) way of handling errors.
+
 --s--
-
-## 01 - Empty window
-
-![](img/01-window.png)
-<!-- .element class="r-stretch" -->
-
---v--
 
 ## Creating GLFW window
 
@@ -619,7 +701,8 @@ glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 GLFWwindow *window = 
-      glfwCreateWindow(1200, 800, "OpenGL Demo", nullptr, nullptr);
+      glfwCreateWindow(1200, 800, "OpenGL Demo", NULL, NULL);
+      
 glfwMakeContextCurrent(window);
 
 ...
@@ -630,9 +713,11 @@ glfwTerminate();
 ```
 
 Notes:
-- Include GLAD first, otherwise GLFW will load its own basic OpenGL header.
-- `glfwWindowHint` - we want OpenGL 4.6 Core profile.
-- `glfwMakeContextCurrent` - subsequent OpenGL calls will go to window context.
+Include `GLAD` first, otherwise `GLFW` will load its own basic OpenGL header.
+
+`glfwWindowHint` - we want OpenGL 4.6 Core profile.
+
+`glfwMakeContextCurrent` - subsequent OpenGL calls will go to window context.
 
 --v--
 
@@ -654,14 +739,27 @@ while (!glfwWindowShouldClose(window)) {
 ```
 
 Notes:
-- `gladLoadGL` loads OpenGL functions.
-- "infinite" loop with drawing commands.
-- `glClear` fills framebuffer with color.
-- `glfwSwapBuffers` swaps back buffer.
+Basically we want to have "infinite" loop with drawing commands.
+
+`gladLoadGL` loads OpenGL functions.
+
+`glClear` fills framebuffer with color.
+
+Drawing affects offscreen buffer, `glfwSwapBuffers` swaps back and front buffers.
 
 --v--
 
-## Handle window resize
+## Empty window
+
+![](img/01-window.png)
+<!-- .element class="r-stretch" -->
+
+Notes:
+Basic window and OpenGL initialization.
+
+--v--
+
+## Window resize
 ```c++
 void windowResizeCb(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
@@ -670,26 +768,30 @@ void windowResizeCb(GLFWwindow *window, int width, int height) {
 glfwSetFramebufferSizeCallback(window, windowResizeCb);
 ```
 
-## Read inputs
+## Keyboard inputs
 ```c++
 if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
   glfwSetWindowShouldClose(window, true);
 }
 ```
 
+Notes:
+Nice to have features:
+- update OpenGL config when window is resized;
+- use `Esc` to exit.
+
 --s--
-
-## 02 - Hello triangle
-
-![](img/02-hello-triangle.png)
-<!-- .element class="r-stretch" -->
-
---v--
 
 ## OpenGL State Machine
 
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Focusrite_Console_02.jpg/1280px-Focusrite_Console_02.jpg)
 <!-- .element class="r-stretch" -->
+
+Notes:
+OpenGL is one huge state machine.
+
+Similar to audio mixer, where inputs from microphones "flow" through number of knobs and switches until reach the output.
+In OpenGL we setup these "knobs" to get desired output.
 
 --v--
 
@@ -709,11 +811,13 @@ glDrawBuffer(...);                    // action
 ```
 
 Notes:
-- Similar to mixing console with a lot of knobs and switches.
-- Depending on internal state, the same input can produce different outputs.
-- Default values can vary between vendors.
-- "Draw" calls use whole state, not only recent changes.
+Similar to mixing console with a lot of knobs and switches.
 
+Depending on internal state, the same input can produce different outputs.
+
+Default values can vary between vendors.
+
+"Draw" calls use whole state, not only recent changes.
 
 --s--
 
@@ -721,14 +825,19 @@ Notes:
 
 ![](img/graphics_pipeline.svg)
 
-- Provide vertex coordinates (bytes) as input
-- Build primitives from the coordinates (triangle)
+- Inputs: vertex coordinates (bytes)
+- Interprets bytes as inputs for next stages
 
 --v--
 
 ## Normalized Device Coordinates
 
 ![](img/ndc.svg)
+
+Notes:
+Device handles coordinates only within NDC cube.
+
+It shows elements on a screen as if viewed from the front of the cube.
 
 --v--
 
@@ -750,9 +859,11 @@ const std::vector<glm::vec3> vertices = {
 ```
 
 Notes:
-- input buffer will grow on later stages
-- structs are easier to work with
-- memory layout is the same
+Input buffer will grow on later stages.
+
+Structs are easier to work with.
+
+`GLM` library helps to ensure matching memory layouts between CPU and GPU structs.
 
 --v--
 
@@ -781,13 +892,17 @@ desc1 --> va1
 
 ```
 
+Notes:
+We have to configure few data structures to provide vertex coordinates (bytes) to the device.
+
+Basically these are buffer for bytes and configuration how to read the buffer.
+
 --v--
 
 ## Vertex Array Object (VAO)
 
 - Where to read input from? - memory buffers
-- How to interpret input? - vertex attribute description
-
+- How to interpret input? - description of vertex attributes
 
 ```c++
 // variable for VAO identifier
@@ -797,6 +912,9 @@ glGenVertexArrays(1, &vertexArray);
 // activate the VAO
 glBindVertexArray(vertexArray);
 ```
+
+Notes:
+Create and activate VAO. All subsequent commands will "bind" to this VAO.
 
 --v--
 
@@ -812,13 +930,14 @@ glGenBuffers(1, &vertexBuf);
 // activate buffer
 glBindBuffer(GL_ARRAY_BUFFER, vertexBuf);
 // upload bytes to the buffer
-// 3(vtx) x 3(attr) x 4(float) = 36 bytes
 glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]),
               vertices.data(), GL_STATIC_DRAW);
 ```
 
 Note:
-- the buffer will belong to previously activated VAO object
+The buffer will belong to previously activated VAO object.
+
+3(vertices) x 3(components) x 4(float) = 36 bytes
 
 --v--
 
@@ -864,7 +983,7 @@ glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
 
 ![](img/graphics_pipeline.svg)
 
-- Run some logic *for each* vertex / fragment
+- Run same logic *for each* vertex / fragment
 - Produce inputs for the next stages
 - GLSL (OpenGL Shading Language)
 
@@ -885,8 +1004,7 @@ void main() {
 ```
 
 Note:
-- Output `gl_Position` as (x,y,z,w) vector
-- `w` is perspective division
+Requirement: output `gl_Position` as (x,y,z,w) vector (`w` is perspective division).
 
 --v--
 
@@ -899,7 +1017,7 @@ Note:
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-  // very complex color (RGBA) calculations 
+  // very complex pixel color (RGBA) calculations 
   fragColor = vec4(0.9, 0.5, 0.3, 1.0);
 }
 ```
@@ -924,7 +1042,9 @@ if (!success) {
 }
 ```
 Note:
-- compilation happens at runtime
+Shader compilation happens at runtime.
+
+`*iv` suffix stands for "int vector".
 
 --v--
 
@@ -947,6 +1067,9 @@ if (!success) {
 }
 ```
 
+Notes:
+Linking ensures that whole pipeline is functional.
+
 --v--
 
 ## Shader source
@@ -963,7 +1086,7 @@ const char *src = source.c_str();
 
 --v--
 
-## File utilities
+## Shared file utilities
 
 ```cmake
 # ./shared/CMakeLists.txt
@@ -990,14 +1113,14 @@ std::string readTextFile(const std::string &fileName);
 - Shaders are heavily dependant on C++ source
   - input buffers
   - attribute descriptions
-- Shaders are accessed at runtime 
+- Shaders are accessed and compiled at runtime 
   - executable path
 - Shaders *can be* provided in binary format
   - compiled offline into intermediate representation
   - SPIR-V for Vulkan
 
 Note:
-- It is bad idea to mix sources and build artifacts.
+It is bad idea to mix sources and build artifacts.
 
 --v--
 
@@ -1040,8 +1163,9 @@ cg-demo/
 --cols--
 
 Notes:
-- Asset files are produced by build system.
-- Shaders can be compiled into SPIR-V
+Asset files are produced by build system.
+
+Shaders can be compiled into SPIR-V.
 
 --s--
 
@@ -1054,7 +1178,7 @@ Notes:
 ## Running pipeline
 
 ```c++
-// setup VAO, shaders, etc.
+// setup VAO, VBO, shaders, etc.
 ...
 
 while (!glfwWindowShouldClose(window)) {
@@ -1076,7 +1200,16 @@ while (!glfwWindowShouldClose(window)) {
 ![](img/02-hello-triangle.png)
 <!-- .element class="r-stretch" -->
 
+Notes:
+Very simple object, but requires configuration of the whole graphics pipeline.
+
+Driver "promises" that this triangle is drawn on GPU. 
+
+Is it true? Who knows... :)
+
 --v--
+
+## Spoilers for next seminars :wink:
 
 ![](img/07-mesh.png)
 <!-- .element class="r-stretch" -->

@@ -24,8 +24,8 @@ slides:
 plugins:
     - name: RevealMermaid
       extra_javascript:
-        - https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.min.js
+        - mermaid.min.js
     
     - extra_css: 
         - extra.css
-        - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css
+        - fontawesome/css/all.min.css

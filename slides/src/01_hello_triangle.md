@@ -151,6 +151,7 @@ and continue with more interesting topics.
 ## Used sources
 
 - https://learnopengl.com/
+- https://docs.vulkan.org/tutorial/latest/
 - https://vulkan-tutorial.com/ 
 - https://vkguide.dev/
 - https://howtovulkan.com/
@@ -1213,3 +1214,9 @@ Is it true? Who knows... :)
 
 ![](img/07-mesh.png)
 <!-- .element class="r-stretch" -->
+
+--v--
+
+![](img/group-qr-code.svg)
+<!-- .element class="r-stretch" -->
+https://chat.whatsapp.com/JRlWHKhlvq42qRAk13gEGh

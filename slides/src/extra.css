@@ -42,6 +42,10 @@
     padding-right: 0;
 }
 
+.reveal code {
+    max-height: 100% !important;
+}
+
 .reveal code.mermaid {
     text-align: center;
 }

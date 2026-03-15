@@ -752,7 +752,7 @@ Drawing affects offscreen buffer, `glfwSwapBuffers` swaps back and front buffers
 
 ## Empty window
 
-![](img/01-window.png)
+![](img/demo/01-window.png)
 <!-- .element class="r-stretch" -->
 
 Notes:
@@ -1198,7 +1198,7 @@ while (!glfwWindowShouldClose(window)) {
 
 ## Hello, triangle! :wave:
 
-![](img/02-hello-triangle.png)
+![](img/demo/02-hello-triangle.png)
 <!-- .element class="r-stretch" -->
 
 Notes:
@@ -1212,7 +1212,7 @@ Is it true? Who knows... :)
 
 ## Spoilers for next seminars :wink:
 
-![](img/07-mesh.png)
+![](img/demo/07-mesh.png)
 <!-- .element class="r-stretch" -->
 
 --v--

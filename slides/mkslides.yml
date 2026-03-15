@@ -12,7 +12,7 @@ index:
     theme: index.css
     nav:
         - "Hello triangle": 01_hello_triangle.md
-        # - "Lorem ipsum sit amet dolor": 02_lorem.md
+        - "Textured mesh": 02_textured_mesh.md
 slides:
     charset: utf-8
     theme: black

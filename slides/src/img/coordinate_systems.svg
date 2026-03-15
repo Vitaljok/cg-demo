@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="396.61353"
+   height="396.69272"
+   viewBox="0 0 396.61358 396.6927"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="coordinate_systems.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#191919"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="true"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#0d0d0d"
+     inkscape:document-units="px"
+     inkscape:zoom="1.7250459"
+     inkscape:cx="153.90895"
+     inkscape:cy="222.31292"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showborder="false"
+     borderlayer="true"
+     showguides="true" />
+  <defs
+     id="defs1">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#pattern12"
+       preserveAspectRatio="xMidYMid"
+       id="pattern8"
+       patternTransform="matrix(0.8,0,0,0.8,-869.01223,152.17033)" />
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#Grid1"
+       preserveAspectRatio="xMidYMid"
+       id="pattern12"
+       patternTransform="matrix(0.8,0,0,0.8,-604.72619,253.90829)"
+       x="-4"
+       y="-8" />
+    <pattern
+       patternUnits="userSpaceOnUse"
+       width="20"
+       height="20"
+       preserveAspectRatio="xMidYMid"
+       id="Grid1"
+       x="0"
+       y="0"
+       style="fill:#ffffff"
+       inkscape:label="Regular grid"
+       inkscape:collect="always"
+       inkscape:isstock="true">
+      <g
+         id="g63950-5">
+        <rect
+           style="fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none"
+           id="rect62492-2"
+           width="1"
+           height="20"
+           x="9.5"
+           y="0" />
+        <rect
+           style="fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none"
+           id="rect63583-4"
+           width="1"
+           height="20"
+           x="-10.5"
+           y="0"
+           transform="rotate(-90)" />
+      </g>
+    </pattern>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-6"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-0" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-6-8"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-0-1" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Dot-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Dot"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 5,0 C 5,2.76 2.76,5 0,5 -2.76,5 -5,2.76 -5,0 c 0,-2.76 2.3,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         sodipodi:nodetypes="sssss"
+         id="path17-5" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Grid"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-110.30679,-202.68837)"
+     style="display:inline">
+    <rect
+       style="opacity:0.25;fill:url(#pattern12);stroke:#999999;stroke-width:0.999996;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect12"
+       width="349"
+       height="349"
+       x="137.80302"
+       y="224.87924" />
+    <path
+       style="fill:none;stroke:#009100;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#ConcaveTriangle-6)"
+       d="M 183.59888,521.99661 V 369.08372"
+       id="path27-0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#b50000;stroke:#b50000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#ConcaveTriangle-6-8)"
+       d="M 189.68568,528.0834 H 341.36875"
+       id="path27-0-6"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18.6667px;line-height:1;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#b50000;stroke:none;stroke-width:3;stroke-linejoin:round"
+       x="366.68961"
+       y="535.26434"
+       id="text1-4-7"><tspan
+         sodipodi:role="line"
+         id="tspan2-1"
+         x="366.68961"
+         y="535.26434">X</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18.6667px;line-height:1;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#009100;stroke:none;stroke-width:3;stroke-linejoin:round"
+       x="177.37494"
+       y="344.33063"
+       id="text1-4-6-7"><tspan
+         sodipodi:role="line"
+         id="tspan3-7"
+         x="177.37494"
+         y="344.33063">Y</tspan></text>
+    <circle
+       style="fill:#cccccc;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path9-5"
+       cx="183.59891"
+       cy="528.08337"
+       r="6.0867944" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Objects"
+     style="display:inline"
+     transform="translate(-17.555632,-135.44379)">
+    <rect
+       style="display:inline;fill:#005c94;fill-opacity:0.745263;stroke:#0084c8;stroke-width:2;stroke-dasharray:none;marker-start:url(#Dot-4);marker-mid:url(#Dot-4)"
+       id="rect8"
+       width="101.08165"
+       height="75.663902"
+       x="-44.847923"
+       y="371.40399"
+       transform="rotate(-29.228467)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Grid 1"
+     style="display:inline"
+     transform="translate(4.6855035e-8,-17.390842)">
+    <path
+       style="display:inline;fill:none;stroke:#009100;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#ConcaveTriangle-6)"
+       d="M 184.26745,230.98734 109.60111,97.543378"
+       id="path6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="display:inline;fill:#b50000;stroke:#b50000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#ConcaveTriangle-6-8)"
+       d="M 192.55142,233.32701 324.92214,159.26118"
+       id="path7"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18.6667px;line-height:1;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;display:inline;fill:#b50000;stroke:none;stroke-width:3;stroke-linejoin:round"
+       x="231.1076"
+       y="304.82227"
+       id="text7"
+       transform="rotate(-29.228467)"><tspan
+         sodipodi:role="line"
+         id="tspan7"
+         x="231.1076"
+         y="304.82227">X'</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:18.6667px;line-height:1;font-family:'Trebuchet MS';-inkscape-font-specification:'Trebuchet MS, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;display:inline;fill:#009100;stroke:none;stroke-width:3;stroke-linejoin:round"
+       x="41.792953"
+       y="113.88852"
+       id="text8"
+       transform="rotate(-29.228467)"><tspan
+         sodipodi:role="line"
+         id="tspan8"
+         x="41.792953"
+         y="113.88852">Y'</tspan></text>
+    <circle
+       style="display:inline;fill:#cccccc;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0"
+       id="circle8"
+       cx="48.016922"
+       cy="297.6413"
+       r="6.0867944"
+       transform="rotate(-29.228467)" />
+    <rect
+       style="display:none;opacity:0.25;fill:url(#pattern8);stroke:#999999;stroke-width:0.999996;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect6"
+       width="349"
+       height="349"
+       x="-126.48308"
+       y="123.14127"
+       transform="rotate(-29.228467)" />
+  </g>
+</svg>

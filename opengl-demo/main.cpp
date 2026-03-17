@@ -3,12 +3,12 @@
 #include <GLFW/glfw3.h>
 
 #include <assert.h>
-#include <print>
-#include <iostream>
 #include <demo/utils.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <print>
 #include <stdexcept>
 
 #include "shader.hpp"
@@ -23,15 +23,6 @@ struct VertexData {
   glm::vec3 pos;
   glm::vec3 color;
   glm::vec2 uv;
-};
-
-enum Uniforms {
-  value = 0,
-  texture0 = 1,
-  texture1 = 2,
-  model = 3,
-  view = 4,
-  projection = 5,
 };
 
 void runOpenGLDemo() {
@@ -138,10 +129,10 @@ void runOpenGLDemo() {
     // update uniforms
     float ts = glfwGetTime();
     float value = sin(ts) / 2.0f + 0.5f;
-    glUniform1f(Uniforms::value, value);
+    glUniform1f(0, value);
     // texture unit ids
-    glUniform1i(Uniforms::texture0, 0);
-    glUniform1i(Uniforms::texture1, 1);
+    glUniform1i(1, 0);
+    glUniform1i(2, 1);
     // transform matrices
     glm::mat4 model = glm::mat4(1.0f);
     model =
@@ -154,10 +145,9 @@ void runOpenGLDemo() {
     glm::mat4 projection = glm::perspective(
         glm::radians(45.0f), (float)1200 / (float)800, 0.1f, 100.0f);
 
-    glUniformMatrix4fv(Uniforms::model, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(Uniforms::view, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(Uniforms::projection, 1, GL_FALSE,
-                       glm::value_ptr(projection));
+    glUniformMatrix4fv(3, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(4, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(5, 1, GL_FALSE, glm::value_ptr(projection));
 
     // draw
     glActiveTexture(GL_TEXTURE0);

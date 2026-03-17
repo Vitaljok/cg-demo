@@ -1,10 +1,10 @@
 :root {
-  /* --r-block-margin: 20px; */
-  --r-main-color: #ddd;
-  --r-heading-color: #eee;
-  --r-heading-text-transform: none;
-  --r-code-font: "JetBrains Mono", monospace;
-  /* --r-heading-margin: 0 0 20px 0; */
+    /* --r-block-margin: 20px; */
+    --r-main-color: #ddd;
+    --r-heading-color: #eee;
+    --r-heading-text-transform: none;
+    --r-code-font: "JetBrains Mono", monospace;
+    /* --r-heading-margin: 0 0 20px 0; */
 }
 
 .cols {
@@ -22,7 +22,7 @@
 }
 
 /* workaround for label background for nodes with images */
-.flowchart g.label > foreignObject > div.labelBkg {
+.flowchart g.label>foreignObject>div.labelBkg {
     background-color: transparent !important;
 }
 
@@ -42,6 +42,24 @@
     padding-right: 0;
 }
 
+.reveal code {
+    max-height: 100% !important;
+}
+
 .reveal code.mermaid {
     text-align: center;
+}
+
+.reveal .speaker-notes ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.reveal .speaker-notes p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.reveal .speaker-notes::before {
+    display: none;
 }

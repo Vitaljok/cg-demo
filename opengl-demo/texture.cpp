@@ -1,7 +1,7 @@
 #include "texture.hpp"
 
 #include <exception>
-#include <fmt/format.h>
+#include <format>
 #include <stb_image.h>
 
 Texture::Texture(const char *fileName, GLint format) {
@@ -10,7 +10,7 @@ Texture::Texture(const char *fileName, GLint format) {
   uint8_t *pixels = stbi_load(fileName, &width, &height, &nChannels, 0);
   if (!pixels) {
     throw std::runtime_error(
-        fmt::format("Failed to load texture {}", fileName));
+        std::format("Failed to load texture {}", fileName));
   }
   glGenTextures(1, &id);
   glBindTexture(GL_TEXTURE_2D, id);

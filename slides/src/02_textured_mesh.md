@@ -4,6 +4,28 @@
 
 Vitalijs Komasilovs
 
+--v--
+
+## Graphics pipeline
+
+![](img/graphics_pipeline.svg)
+
+Notes:
+- Uploaded vertex coordinates as a byte buffer
+- Specified how to interpret the buffer
+- Vertex shader receives inputs and sends them down the pipeline
+- Rasterized vertices as triangle
+- Set color for each fragment
+- Blended triangle with background
+- Showed the framebuffer on screen
+
+--v--
+
+## Hello triangle
+
+![](img/demo/02-hello-triangle.png)
+<!-- .element class="r-stretch" -->
+
 --s--
 
 ## Drawing "complex" objects
@@ -31,6 +53,9 @@ const std::vector<glm::vec3> vertices = {
 
 --cols--
 
+Notes:
+Drawing multiple triangles has a problem: many duplicates.
+
 --v--
 
 ## Vertices and indices
@@ -57,6 +82,8 @@ const std::vector<uint32_t> indices = {
 ```
 
 --cols--
+Notes:
+The trick: define unique vertices, and then use them by index.
 
 --v--
 
@@ -91,6 +118,8 @@ style ebo stroke:green;
 style idxBytes stroke:green;
 
 ```
+Notes:
+Additional *element* buffer should be created and uploaded to GPU.
 
 --v-- 
 
@@ -145,6 +174,9 @@ const std::vector<glm::vec3> vertices = {
 };
 ```
 
+Notes:
+So far only single vertex attribute was used - XYZ coordinates.
+
 --v--
 
 ## More vertex attributes
@@ -165,6 +197,11 @@ const std::vector<VertexData> vertices = {
 };
 
 ```
+Notes:
+It is possible to upload multiple attributes.
+- Max number is defined by GPU hardware;
+- OpenGL requires at least 16.
+For convenience it is wise to define `struct` for vertex attributes.
 
 --v--
 
@@ -186,6 +223,8 @@ glVertexAttribPointer(
 );
 
 ```
+Notes:
+Stride and offset parameters are easily obtained from the struct.
 
 --v--
 
@@ -206,6 +245,10 @@ void main() {
   vertexColor = aColor;
 }
 ```
+Notes:
+Input attribute is available at corresponding `location`.
+
+The shader can use the attribute and, optionally, pass it to the next stages.
 
 --v--
 
@@ -223,6 +266,9 @@ void main() {
   fragColor = vec4(vertexColor, 1.0);
 }
 ```
+Notes:
+Vertex shader output location correspond to Fragment shader input location.
+
 --v--
 
 ## Colored rectangle
@@ -230,6 +276,8 @@ void main() {
 ![](img/demo/04-vertex-colors.png)
 <!-- .element class="r-stretch" -->
 
+Notes:
+Why so many colors? We defined only few "pure" colors.
 
 --v--
 
@@ -240,11 +288,16 @@ void main() {
 Rasterization stage interpolates attributes<br>
 (position, color, or any other value).
 
+Notes:
+Interpolation can be used for various tricks.
+
+Vertex shader `out` ==> Fragment shader `in`
+
 --s--
 
 ## Uniforms
 
-- Attributes are specified *per element*
+- Shader attributes are specified *per element*
     - vertex, e.g. from input buffers
     - fragment, e.g. interpolated
     
@@ -260,14 +313,18 @@ Rasterization stage interpolates attributes<br>
 
 glUseProgram(shaderProgram);
 
-// calculate value dynamically, i.e. animate
+// calculate value dynamically, i.e. make "animation"
 float ts = glfwGetTime();
 float value = sin(ts) / 2.0f + 0.5f;
-// set uniform value
+// set value for uniform #0
 glUniform1f(0, value);
 
 ...
 ```
+
+Notes:
+- `1f` - 1 float value
+- `4uiv` - vector of 4 unsigned int values
 
 --v--
 
@@ -278,7 +335,6 @@ glUniform1f(0, value);
 
 layout(location = 0) in vec3 vertexColor;
 layout(location = 0) uniform float value;
-
 layout(location = 0) out vec4 fragColor;
 
 void main() {
@@ -286,6 +342,10 @@ void main() {
   fragColor = vec4(vertexColor * value, 1.0);
 }
 ```
+
+Notes:
+Value is used as a "lightness" parameter for vertex colors.
+
 --v--
 
 ## Animated colored rectangle
@@ -302,14 +362,20 @@ void main() {
 How to add more details to the objects (e.g. colors)?
 - add more vertices with color attributes;
 - triangles on screen become smaller;
-- coloring few pixels &rArr; naive algorithm;
-- naive algorithm &rArr; slow rendering.
+- only few pixels per triangle;
+- similar to naive per-pixel algorithm;
+- slow rendering :worried:
 
 --v--
 
 ## Textures
 
 ![](img/texture_uv.svg)
+
+Notes:
+Texture is just a raster image wrapped around triangles.
+
+UV coordinates define which part of the image to use for each triangle.
 
 --v--
 
@@ -330,6 +396,9 @@ const std::vector<VertexData> vertices = {
 };
 ```
 
+Notes:
+Add even more attributes to the vertex buffer.
+
 --v--
 
 ## UV attribute description
@@ -345,6 +414,11 @@ glVertexAttribPointer(
     (void *)offsetof(VertexData, uv)
 );
 ```
+Notes:
+Define attribute similarly to previous.
+
+`struct` trick eliminates manual offset calculations.
+
 
 --v--
 
@@ -367,17 +441,20 @@ void main() {
 }
 ```
 
+Notes:
+Similar to vertex colors, we can use UV values or pass them to the next stages.
+
+In this case UVs will be interpolated.
+
 --v--
 
 ## Reading image files
 
-Single-file library https://github.com/nothings/stb
+Single-header library https://github.com/nothings/stb
 
 ```c++
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 ```
-
 ```c++
 int width, height, nChannels;
 uint8_t *pixels = stbi_load("assets/textures/old_wood.jpg",
@@ -390,6 +467,8 @@ if (!pixels) {
 
 stbi_image_free(pixels);
 ```
+Notes:
+`pixels` are raw bytes for pixel colors.
 
 --v--
 
@@ -400,15 +479,24 @@ GLuint woodTexture;
 glGenTextures(1, &woodTexture);
 glBindTexture(GL_TEXTURE_2D, woodTexture);
 
+// optional parameters
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+// uploading
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
              GL_UNSIGNED_BYTE, pixels);
 glGenerateMipmap(GL_TEXTURE_2D);
 ```
+
+Notes:
+- `0` - level
+- `GL_RGB` - internal GPU format
+- `width`, `height`
+- `0` - border (legacy, must be 0)
+- `GL_RGB` - buffer format
 
 --v--
 
@@ -430,6 +518,11 @@ glBindTexture(GL_TEXTURE_2D, smileTexture);
 glBindVertexArray(vertexArray);
 glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
 ```
+
+Notes:
+Uniforms specify `location` for texture "slots".
+
+Textures are bound to the "slots".
 
 --v--
 
@@ -453,6 +546,13 @@ void main() {
 }
 ```
 
+Notes:
+Special type of uniform - `sampler2D`.
+
+`texture(...)` function "samples" given texture at specified coordinate.
+
+Obtained "sample" can be used in arbitrary way (artistic freedom).
+
 --v--
 
 ## Textured rectangle
@@ -466,15 +566,25 @@ void main() {
 
 ![](img/transformations.svg)
 
+Note:
+Creating and uploading vertex buffers is "expensive" operation.
+
+Better approach is to upload it once (or rarely), and transform later as needed.
+
+Usually transformations are used for vertex coordinates, but can be applied to any parameters it it makes sense.
+
 --v--
 
 ## Transformation order matters
 
 ![](img/transformations_order.svg)
 
+Notes:
+Transformations can be chained for desired results.
+
 --v--
 
-## Math tricks
+## How to apply transformations?
 
 $
 T = \text{\\{rotation, translation, scale, ...\\}}
@@ -485,6 +595,9 @@ T \cdot\left(x, y, z\right)
 \Rightarrow
 \left(x', y', z'\right)
 $
+
+Notes:
+It would be nice to have a technique to apply all transformations at once.
 
 --v--
 
@@ -513,6 +626,12 @@ $
 ```glsl
 gl_Position = vec4(x, y, z, 1.0);
 ```
+
+Notes:
+`4x4` matrix is able to "encode" all possible transformations.
+
+Formulas for each element can be derived in geometry class.
+
 --v--
 
 ## Transformation matrix uniform
@@ -525,11 +644,16 @@ gl_Position = vec4(x, y, z, 1.0);
 glm::mat4 trans = glm::mat4(1.0f);
 trans = glm::translate(trans, {0.75f, 0.25f, 0.0f});
 trans = glm::scale(trans, {0.25f, 0.75f, 0.0f});
-trans = glm::rotate(trans, 0.75f, {0.0f, 0.0f, 1.0f});
+trans = glm::rotate(trans, glm::radians(45.0f), {0.0f, 0.0f, 1.0f});
 
 // upload to GPU, location=3
 glUniformMatrix4fv(3, 1, GL_FALSE, glm::value_ptr(trans));
 ```
+
+Notes:
+The matrix can be chained via individual transformations.
+
+Uniforms are used to upload the matrix to GPU.
 
 --v--
 
@@ -575,6 +699,12 @@ Define vertices in one coordinate system, and later transform to another.
 
 ![](img/coordinates_model.svg)
 
+Notes:
+Vertices are defined in "local" space, i.e. coordinates relative to local reference point (pivot).
+
+Various objects may be placed withing the "modelled world", i.e. coordinates relative to "world" center.
+
+The same vertices can be "reused" multiple times with different "world" coordinates.
 
 --v--
 
@@ -582,11 +712,25 @@ Define vertices in one coordinate system, and later transform to another.
 
 ![](img/coordinates_view.svg)
 
+Notes:
+Camera defines our eye position, i.e. how we look into the "world".
+
+From our reference point, we are in the center of the space, and everything else is transformed accordingly. 
+
 --v--
 
 ## Projection (clip) space
 
 ![](img/coordinates_projection.svg)
+
+Notes:
+View parameters define visible part of the "world" - frustum.
+
+The frustum is "projected" into NDC, i.e. everything outside the frustum is "clipped".
+
+Common types of projections: perspective and orthographic, but special types can be defined as well.
+
+On later stages projection space (3D) is transformed to screen space (2D).
 
 --v--
 
@@ -607,6 +751,13 @@ glUniformMatrix4fv(4, 1, GL_FALSE, glm::value_ptr(view));
 glUniformMatrix4fv(5, 1, GL_FALSE, glm::value_ptr(projection));
 ```
 
+Notes:
+Matrices can be updated (and uploaded) at different rates.
+For example:
+- `model` is updated when object moves or rotates;
+- `view` is updated when view is changed;
+- `projection` may be updated for artistic reasons (e.g. zoom effect).
+
 --v--
 
 ## Vertex shader
@@ -622,6 +773,9 @@ void main() {
   ...
 }
 ```
+
+Notes:
+Matrices are multiplied in reverse order, thus the coordinates systems are changed from local (vertex), to model, to view, and finally to projection space.
 
 --v--
 
@@ -653,6 +807,8 @@ for (size_t i = 0; i < positions.size(); i++) {
 }
 
 ```
+Note:
+The same vertex array is drawn multiple times with different model coordinates.
 
 --v--
 
@@ -664,10 +820,13 @@ for (size_t i = 0; i < positions.size(); i++) {
 
 --s--
 
-## Exporting models from DCCs
+## Preparing objects using DCCs
 
 ![](img/blender-mesh.png)
 <!-- .element class="r-stretch" -->
+
+Notes:
+Objects are easier to define within dedicated DCC software, and export for use in rendering engine.
 
 --v--
 
@@ -686,9 +845,9 @@ vt 0.606747 0.881346
 vt 0.608294 0.199824
 vt 0.533257 0.199893
 ...
-f 12/1/1 11/2/1 5/3/1
-f 17/5/2 16/6/2 32/7/2
-f 43/9/3 34/10/3 4/11/3
+f 12/1 11/2 5/3
+f 17/5 16/6 32/7
+f 43/9 34/10 4/11
 ```
 --c--
 <br>
@@ -724,6 +883,9 @@ set(ASSIMP_BUILD_TESTS OFF)
 FetchContent_MakeAvailable(assimp)
 ```
 
+Notes:
+ASSIMP library supports dozens of file formats. We need only OBJ importing, thus disable everything else.
+
 --v--
 
 ## Importing mesh
@@ -737,7 +899,7 @@ Assimp::Importer importer;
 auto scene =
     importer.ReadFile("assets/meshes/keep.obj", aiProcess_Triangulate);
 
-// for now assume single mesh model
+// for now assume single mesh scene
 auto mesh = scene->mMeshes[0]; 
 
 // use imported data
@@ -746,16 +908,19 @@ auto mesh = scene->mMeshes[0];
 importer.FreeScene();
 ```
 
+Notes:
+Triangulation is applied at post-processing stage, just in case if imported mesh contains complex polygons.
+
 --v--
 
-## Vertices
+## Reading vertices
 
 ```c++
 std::vector<VertexData> vertices;
 
 for (size_t i = 0; i < mesh->mNumVertices; i++) {
     auto vtx = mesh->mVertices[i];
-    auto uvs = mesh->mTextureCoords[0][i];
+    auto uvs = mesh->mTextureCoords[0][i]; // assume single UV set
 
     VertexData data;
     data.pos = {vtx.x, vtx.y, vtx.z};
@@ -765,7 +930,7 @@ for (size_t i = 0; i < mesh->mNumVertices; i++) {
 ```
 --v--
 
-## Indices
+## Reading indices
 
 ```c++
 std::vector<uint32_t> indices;
@@ -780,24 +945,32 @@ for (size_t i = 0; i < mesh->mNumFaces; i++) {
 
 --v--
 
-## Few tricks
+## Few tricks using already known techniques
 
 ```c++
 Texture dayTexture("assets/textures/keep_baked_day.png");
 Texture nightTexture("assets/textures/keep_baked_night.png");
 ```
+
 ```c++
 float dayNight = sin(glfwGetTime() / 2.0f) * 5.0f + 0.5f;
 glUniform1f(3, dayNight);
 ```
+
+```glsl
+// fragment shader
+fragColor = mix(clrTex1, clrTex2, dayNight);
+```
+
 ```c++
 glm::mat4 view = glm::lookAt(...);
 glUniformMatrix4fv(5, 1, GL_FALSE, glm::value_ptr(view));
 ```
 
-```glsl
-fragColor = mix(clrTex1, clrTex2, dayNight);
-```
+Notes:
+- Specially designed textures with baked lightning.
+- Dynamic value used as day-night factor.
+- GLM utilities for easier transformation matrix definitions.
 
 --v--
 
@@ -808,3 +981,12 @@ fragColor = mix(clrTex1, clrTex2, dayNight);
     <img src="img/demo/07-mesh-night.png" class="fragment">
 </div>
 
+Notes:
+Materials, lightning and shadows are baked into texture.
+Thus single mesh per whole scene.
+
+Next steps:
+- dynamic camera with input controls
+- dynamic lightning
+- materials and PBR
+- shadows

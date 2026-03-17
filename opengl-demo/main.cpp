@@ -97,8 +97,9 @@ void runOpenGLDemo() {
   std::vector<uint32_t> indices;
   for (size_t i = 0; i < mesh->mNumFaces; i++) {
     auto face = mesh->mFaces[i];
-    for (size_t j = 0; j < face.mNumIndices; j++)
+    for (size_t j = 0; j < face.mNumIndices; j++) {
       indices.push_back(face.mIndices[j]);
+    }
   }
 
   importer.FreeScene();

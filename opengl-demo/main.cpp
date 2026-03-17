@@ -32,15 +32,6 @@ struct VertexData {
   glm::vec2 uv;
 };
 
-enum Uniforms {
-  value = 0,
-  texture0 = 1,
-  texture1 = 2,
-  model = 3,
-  view = 4,
-  projection = 5,
-};
-
 void runOpenGLDemo() {
   // Initialize window
   glfwInit();
@@ -167,35 +158,34 @@ void runOpenGLDemo() {
     // uniforms
     float ts = glfwGetTime();
     float dayNight = sin(ts / 2.0f) * 5.0f + 0.5f;
-    glUniform1f(Uniforms::value, dayNight);
+    glUniform1f(0, dayNight);
 
     // textures
-    glUniform1i(Uniforms::texture0, 0); // unit id=0
+    glUniform1i(1, 0); // unit id=0
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, dayTexture);
 
-    glUniform1i(Uniforms::texture1, 1); // unit id=1
+    glUniform1i(2, 1); // unit id=1
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, nightTexture);
 
     // transform matrices
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, ts, glm::vec3(0.0f, 1.0f, 0.0f));
+    glUniformMatrix4fv(3, 1, GL_FALSE, glm::value_ptr(model));
+
     glm::mat4 view =
         glm::lookAt(glm::vec3(0.0f, 20.0f, 30.0f), glm::vec3(0.0f, 5.0f, 0.0f),
                     glm::vec3(0.0f, 1.0f, 0.0f));
-    glUniformMatrix4fv(Uniforms::view, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(4, 1, GL_FALSE, glm::value_ptr(view));
 
     glm::mat4 projection = glm::perspective(
         glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f,
         100.0f);
-    glUniformMatrix4fv(Uniforms::projection, 1, GL_FALSE,
-                       glm::value_ptr(projection));
+    glUniformMatrix4fv(5, 1, GL_FALSE, glm::value_ptr(projection));
 
     // draw
     glBindVertexArray(vertexArray);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, ts, glm::vec3(0.0f, 1.0f, 0.0f));
-    glUniformMatrix4fv(Uniforms::model, 1, GL_FALSE, glm::value_ptr(model));
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void *)0);
 
     // swap and events

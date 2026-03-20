@@ -571,11 +571,11 @@ Creating and uploading vertex buffers is "expensive" operation.
 
 Better approach is to upload it once (or rarely), and transform later as needed.
 
-Usually transformations are used for vertex coordinates, but can be applied to any parameters it it makes sense.
+Usually transformations are used for vertex coordinates, but can be applied to any parameters if it makes sense.
 
 --v--
 
-## Transformation order matters
+## Transformation order
 
 ![](img/transformations_order.svg)
 

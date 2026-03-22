@@ -6,6 +6,8 @@ add_executable(opengl-demo
     texture.cpp
     mesh.hpp
     mesh.cpp
+    camera.hpp
+    camera.cpp
 )
 
 add_shaders(opengl-demo

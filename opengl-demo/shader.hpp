@@ -1,20 +1,22 @@
 #pragma once
 
 #include <glad/gl.h>
-#include <vector>
-
-class Shader {
-public:
-  GLuint id;
-  Shader(const GLenum type, const char *fileName);
-  operator GLuint() const { return id; };
-  ~Shader();
-};
+#include <map>
+#include <string>
 
 class ShaderProgram {
 public:
   GLuint id;
-  ShaderProgram(const std::vector<Shader> &shaders);
+  ShaderProgram() = default;
+  ShaderProgram(const char *vertexFileName, const char *fragmentFileName);
   operator GLuint() const { return id; };
-  ~ShaderProgram();
+
+  void setFloat(const char *name, float value);
+  void setMatrix(const char *name, const float *value);
+  void setTexture(const char *name, int setId, GLuint value);
+
+private:
+  GLint getLocation(const char *name);
+  std::map<std::string, GLint> locationMap;
+  GLuint createShader(const GLenum type, const char *fileName);
 };

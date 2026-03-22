@@ -3,7 +3,7 @@
 layout(location = 0) in vec3 vertexColor;
 layout(location = 1) in vec2 uv;
 
-layout(location = 0) uniform float value;
+layout(location = 0) uniform float dayNight;
 layout(location = 1) uniform sampler2D tex1;
 layout(location = 2) uniform sampler2D tex2;
 
@@ -13,5 +13,5 @@ void main() {
   vec4 clrTex1 = texture(tex1, uv);
   vec4 clrTex2 = texture(tex2, uv);
   vec4 clrVtx = vec4(vertexColor, 1.0f);
-  fragColor = mix(clrTex1, clrTex2, clamp(value, 0, 1));
+  fragColor = mix(clrTex1, clrTex2, clamp(dayNight, 0, 1));
 }

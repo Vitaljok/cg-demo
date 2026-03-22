@@ -27,5 +27,3 @@ Texture::Texture(const char *fileName, GLint format) {
 
   stbi_image_free(pixels);
 }
-
-Texture::~Texture() { glDeleteTextures(1, &id); }

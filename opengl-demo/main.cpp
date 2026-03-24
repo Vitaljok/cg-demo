@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "camera.hpp"
+#include "gui.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
@@ -24,6 +25,7 @@ private:
   Texture nightTexture;
   Mesh mesh;
   Camera camera;
+  GUI gui;
   glm::dvec2 lastCursor;
   bool cursorTracking = false;
 
@@ -78,12 +80,11 @@ private:
     initWindow();
     loadAssets();
     camera = Camera(glm::vec3(0.0f, 20.0f, 30.0f), -90, -25);
+    gui = GUI(window);
 
     // OpenGL config
     glViewport(0, 0, windowSize.x, windowSize.y);
     glEnable(GL_DEPTH_TEST);
-    // wireframe mode
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   }
 
   void processInput(float dt) {
@@ -144,6 +145,14 @@ private:
 
       processInput(dt);
 
+      if (gui.data.wireframeMode) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      } else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      }
+
+      gui.data.fov = fov;
+
       // render
       glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -170,6 +179,8 @@ private:
 
       // draw
       mesh.draw();
+
+      gui.draw();
 
       // swap and events
       glfwSwapBuffers(window);

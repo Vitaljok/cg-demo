@@ -8,6 +8,8 @@ add_executable(opengl-demo
     mesh.cpp
     camera.hpp
     camera.cpp
+    gui.cpp
+    gui.hpp
 )
 
 add_shaders(opengl-demo
@@ -23,4 +25,5 @@ target_link_libraries(opengl-demo
     demo::shared
     stb::stb
     assimp::assimp
+    imgui::imgui
 )

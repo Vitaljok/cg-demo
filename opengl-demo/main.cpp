@@ -32,9 +32,10 @@ private:
   Mesh plane;
   glm::mat4 planeMat;
 
-  glm::mat4 lampMat;
+  glm::vec3 lightPos = {3.0f, 5.0f, 5.0f};
   glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
   glm::vec3 objectColor = {0.9f, 0.5f, 0.3f};
+  glm::mat4 lampMat;
 
   Camera camera;
   GUI gui;
@@ -118,7 +119,7 @@ private:
 
     {
       glm::mat4 mat = glm::mat4(1.0f);
-      mat = glm::translate(mat, {3.0f, 5.0f, 5.0f});
+      mat = glm::translate(mat, lightPos);
       mat = glm::scale(mat, {0.2f, 0.2f, 0.2f});
       lampMat = mat;
     }
@@ -222,6 +223,8 @@ private:
 
       shaderProgram.setVec3("objectColor", glm::value_ptr(objectColor));
       shaderProgram.setVec3("lightColor", glm::value_ptr(lightColor));
+      shaderProgram.setVec3("lightPos", glm::value_ptr(lightPos));
+      shaderProgram.setVec3("cameraPos", glm::value_ptr(camera.position));
 
       shaderProgram.setMatrix("model", glm::value_ptr(monkeyMat));
       monkey.draw();

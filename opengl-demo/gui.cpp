@@ -43,11 +43,24 @@ void GUI::draw() {
     ImGui::Checkbox("Wireframe mode", &data.wireframeMode);
   }
 
-  if (ImGui::CollapsingHeader("Shading", ImGuiTreeNodeFlags_DefaultOpen)) {
-    ImGui::ColorEdit3("Object color", data.objectColor,
+  if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::ColorEdit3("Diffuse##mat", data.materialDiffuse,
                       ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
                           ImGuiColorEditFlags_PickerHueWheel);
-    ImGui::ColorEdit3("Light color", data.lightColor,
+    ImGui::ColorEdit3("Specular##mat", data.materialSpecular,
+                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
+                          ImGuiColorEditFlags_PickerHueWheel);
+    ImGui::DragFloat("Shininess##mat", data.materialShininess, 1.0, 1.0, 250.0);
+  }
+
+  if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::ColorEdit3("Ambient##light", data.lightAmbient,
+                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
+                          ImGuiColorEditFlags_PickerHueWheel);
+    ImGui::ColorEdit3("Diffuse##light", data.lightDiffuse,
+                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
+                          ImGuiColorEditFlags_PickerHueWheel);
+    ImGui::ColorEdit3("Specular##light", data.lightSpecular,
                       ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
                           ImGuiColorEditFlags_PickerHueWheel);
   }

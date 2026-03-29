@@ -15,6 +15,19 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
+struct Material {
+  glm::vec3 diffuse;
+  glm::vec3 specular;
+  float shininess;
+};
+
+struct Light {
+  glm::vec3 pos;
+  glm::vec3 ambient;
+  glm::vec3 diffuse;
+  glm::vec3 specular;
+};
+
 class OpenGLApp {
 private:
   glm::ivec2 windowSize = {1200, 800};
@@ -24,18 +37,23 @@ private:
   ShaderProgram lampProgram;
 
   Mesh sphere;
-  glm::mat4 sphereMat;
+  glm::mat4 sphereMatrix;
+  glm::mat4 lampMatrix;
   Mesh cube;
-  glm::mat4 cubeMat;
+  glm::mat4 cubeMatrix;
   Mesh monkey;
-  glm::mat4 monkeyMat;
+  glm::mat4 monkeyMatrix;
   Mesh plane;
-  glm::mat4 planeMat;
+  glm::mat4 planeMatrix;
 
-  glm::vec3 lightPos = {3.0f, 5.0f, 5.0f};
-  glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
-  glm::vec3 objectColor = {0.9f, 0.5f, 0.3f};
-  glm::mat4 lampMat;
+  Material material = {.diffuse = {0.9f, 0.5f, 0.3f},
+                       .specular = {1.0f, 1.0f, 1.0f},
+                       .shininess = 32};
+
+  Light light = {.pos = {3.0f, 5.0f, 5.0f},
+                 .ambient = {0.1f, 0.1f, 0.1f},
+                 .diffuse = {1.0f, 1.0f, 1.0f},
+                 .specular = {0.5f, 0.5f, 0.5f}};
 
   Camera camera;
   GUI gui;
@@ -93,35 +111,35 @@ private:
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::translate(mat, {-2.0f, 1.0f, -1.0f});
       mat = glm::rotate(mat, glm::radians(35.0f), {0.0f, 1.0f, 0.0f});
-      cubeMat = mat;
+      cubeMatrix = mat;
     }
 
     {
       sphere = Mesh("assets/meshes/icosphere.obj");
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::translate(mat, {2.0f, 1.0f, -1.0f});
-      sphereMat = mat;
+      sphereMatrix = mat;
     }
 
     {
       monkey = Mesh("assets/meshes/suzanne.obj");
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::translate(mat, {0.0f, 1.0f, 2.0f});
-      monkeyMat = mat;
+      monkeyMatrix = mat;
     }
 
     {
       plane = Mesh("assets/meshes/plane.obj");
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::scale(mat, {5.0f, 5.0f, 5.0f});
-      planeMat = mat;
+      planeMatrix = mat;
     }
 
     {
       glm::mat4 mat = glm::mat4(1.0f);
-      mat = glm::translate(mat, lightPos);
+      mat = glm::translate(mat, light.pos);
       mat = glm::scale(mat, {0.2f, 0.2f, 0.2f});
-      lampMat = mat;
+      lampMatrix = mat;
     }
   }
 
@@ -129,10 +147,14 @@ private:
     initWindow();
     loadAssets();
     camera = Camera(glm::vec3(0.0f, 5.0f, 12.0f), -90, -20);
-    gui = GUI(window);
 
-    gui.data.objectColor = glm::value_ptr(objectColor);
-    gui.data.lightColor =  glm::value_ptr(lightColor);
+    gui = GUI(window);
+    gui.data.materialDiffuse = glm::value_ptr(material.diffuse);
+    gui.data.materialSpecular = glm::value_ptr(material.specular);
+    gui.data.materialShininess = &material.shininess;
+    gui.data.lightAmbient = glm::value_ptr(light.ambient);
+    gui.data.lightDiffuse = glm::value_ptr(light.diffuse);
+    gui.data.lightSpecular = glm::value_ptr(light.specular);
 
     // OpenGL config
     glViewport(0, 0, windowSize.x, windowSize.y);
@@ -221,25 +243,33 @@ private:
           100.0f);
       shaderProgram.setMatrix("projection", glm::value_ptr(projection));
 
-      shaderProgram.setVec3("objectColor", glm::value_ptr(objectColor));
-      shaderProgram.setVec3("lightColor", glm::value_ptr(lightColor));
-      shaderProgram.setVec3("lightPos", glm::value_ptr(lightPos));
+      shaderProgram.setVec3("material.diffuse",
+                            glm::value_ptr(material.diffuse));
+      shaderProgram.setVec3("material.specular",
+                            glm::value_ptr(material.specular));
+      shaderProgram.setFloat("material.shininess", material.shininess);
+
+      shaderProgram.setVec3("light.pos", glm::value_ptr(light.pos));
+      shaderProgram.setVec3("light.ambient", glm::value_ptr(light.ambient));
+      shaderProgram.setVec3("light.diffuse", glm::value_ptr(light.diffuse));
+      shaderProgram.setVec3("light.specular", glm::value_ptr(light.specular));
+
       shaderProgram.setVec3("cameraPos", glm::value_ptr(camera.position));
 
-      shaderProgram.setMatrix("model", glm::value_ptr(monkeyMat));
+      shaderProgram.setMatrix("model", glm::value_ptr(monkeyMatrix));
       monkey.draw();
-      shaderProgram.setMatrix("model", glm::value_ptr(cubeMat));
+      shaderProgram.setMatrix("model", glm::value_ptr(cubeMatrix));
       cube.draw();
-      shaderProgram.setMatrix("model", glm::value_ptr(sphereMat));
+      shaderProgram.setMatrix("model", glm::value_ptr(sphereMatrix));
       sphere.draw();
-      shaderProgram.setMatrix("model", glm::value_ptr(planeMat));
+      shaderProgram.setMatrix("model", glm::value_ptr(planeMatrix));
       plane.draw();
 
       glUseProgram(lampProgram);
-      lampProgram.setMatrix("model", glm::value_ptr(lampMat));
+      lampProgram.setMatrix("model", glm::value_ptr(lampMatrix));
       lampProgram.setMatrix("view", glm::value_ptr(view));
       lampProgram.setMatrix("projection", glm::value_ptr(projection));
-      lampProgram.setVec3("lightColor", glm::value_ptr(lightColor));
+      lampProgram.setVec3("lightColor", glm::value_ptr(light.diffuse));
       sphere.draw();
 
       gui.draw();

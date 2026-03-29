@@ -31,7 +31,8 @@ void GUI::draw() {
               1000 / *fpsMax);
   ImGui::Text("%.1f FPS [%.1f, %.1f]", io.Framerate, *fpsMin, *fpsMax);
 
-  ImGui::PlotHistogram("\r", hist.data(), hist.size(), n, NULL, 0, *fpsMax, {0, 60});
+  ImGui::PlotHistogram("\r", hist.data(), hist.size(), n, NULL, 0, *fpsMax,
+                       {0, 60});
 
   ImGui::Text("%d vertices, %d triangles", io.MetricsRenderVertices,
               io.MetricsRenderIndices / 3);
@@ -40,6 +41,15 @@ void GUI::draw() {
   if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen)) {
     ImGui::Text("FOV: %.1f", data.fov);
     ImGui::Checkbox("Wireframe mode", &data.wireframeMode);
+  }
+
+  if (ImGui::CollapsingHeader("Shading", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::ColorEdit3("Object color", data.objectColor,
+                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
+                          ImGuiColorEditFlags_PickerHueWheel);
+    ImGui::ColorEdit3("Light color", data.lightColor,
+                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
+                          ImGuiColorEditFlags_PickerHueWheel);
   }
   ImGui::End();
 

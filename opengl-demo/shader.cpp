@@ -69,8 +69,8 @@ void ShaderProgram::setFloat(const char *name, float value) {
   glUniform1f(getLocation(name), value);
 }
 
-void ShaderProgram::setVec3(const char *name, float x, float y, float z) {
-  glUniform3f(getLocation(name), x, y, z);
+void ShaderProgram::setVec3(const char *name, const float *value) {
+  glUniform3fv(getLocation(name), 1, value);
 }
 
 void ShaderProgram::setMatrix(const char *name, const float *value) {

@@ -33,6 +33,8 @@ private:
   glm::mat4 planeMat;
 
   glm::mat4 lampMat;
+  glm::vec3 lightColor = {1.0f, 1.0f, 1.0f};
+  glm::vec3 objectColor = {0.9f, 0.5f, 0.3f};
 
   Camera camera;
   GUI gui;
@@ -128,6 +130,9 @@ private:
     camera = Camera(glm::vec3(0.0f, 5.0f, 12.0f), -90, -20);
     gui = GUI(window);
 
+    gui.data.objectColor = glm::value_ptr(objectColor);
+    gui.data.lightColor =  glm::value_ptr(lightColor);
+
     // OpenGL config
     glViewport(0, 0, windowSize.x, windowSize.y);
     glEnable(GL_DEPTH_TEST);
@@ -215,8 +220,8 @@ private:
           100.0f);
       shaderProgram.setMatrix("projection", glm::value_ptr(projection));
 
-      shaderProgram.setVec3("objectColor", 0.9f, 0.5f, 0.3f);
-      shaderProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+      shaderProgram.setVec3("objectColor", glm::value_ptr(objectColor));
+      shaderProgram.setVec3("lightColor", glm::value_ptr(lightColor));
 
       shaderProgram.setMatrix("model", glm::value_ptr(monkeyMat));
       monkey.draw();
@@ -231,7 +236,7 @@ private:
       lampProgram.setMatrix("model", glm::value_ptr(lampMat));
       lampProgram.setMatrix("view", glm::value_ptr(view));
       lampProgram.setMatrix("projection", glm::value_ptr(projection));
-      lampProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+      lampProgram.setVec3("lightColor", glm::value_ptr(lightColor));
       sphere.draw();
 
       gui.draw();

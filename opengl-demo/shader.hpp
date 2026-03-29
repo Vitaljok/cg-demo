@@ -12,7 +12,7 @@ public:
   operator GLuint() const { return id; };
 
   void setFloat(const char *name, float value);
-  void setVec3(const char *name, float x, float y, float z);
+  void setVec3(const char *name, const float *value);
   void setMatrix(const char *name, const float *value);
   void setTexture(const char *name, int setId, GLuint value);
 

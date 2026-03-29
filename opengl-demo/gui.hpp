@@ -7,6 +7,8 @@ struct GLFWwindow;
 struct GUIData {
   float fov;
   bool wireframeMode = false;
+  float *objectColor;
+  float *lightColor;
 };
 
 class GUI {

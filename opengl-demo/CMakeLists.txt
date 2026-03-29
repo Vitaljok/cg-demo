@@ -13,8 +13,9 @@ add_executable(opengl-demo
 )
 
 add_shaders(opengl-demo
-    demo.frag
-    demo.vert
+    shading.vert
+    shading.frag
+    shading_lamp.frag
 )
 
 target_link_libraries(opengl-demo

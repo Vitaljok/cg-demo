@@ -19,9 +19,9 @@ public:
   void draw();
 
 private:
-    GLuint vertexArray;
-    GLuint vertexBuffer;
-    GLuint indexBuffer;
+  GLuint vertexArray;
+  GLuint vertexBuffer;
+  GLuint indexBuffer;
 
-    void upload();
+  void upload();
 };

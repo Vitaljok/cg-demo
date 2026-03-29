@@ -21,9 +21,19 @@ private:
   float fov = 45.0;
   GLFWwindow *window;
   ShaderProgram shaderProgram;
-  Texture dayTexture;
-  Texture nightTexture;
-  Mesh mesh;
+  ShaderProgram lampProgram;
+
+  Mesh sphere;
+  glm::mat4 sphereMat;
+  Mesh cube;
+  glm::mat4 cubeMat;
+  Mesh monkey;
+  glm::mat4 monkeyMat;
+  Mesh plane;
+  glm::mat4 planeMat;
+
+  glm::mat4 lampMat;
+
   Camera camera;
   GUI gui;
   glm::dvec2 lastCursor;
@@ -69,17 +79,53 @@ private:
   }
 
   void loadAssets() {
-    shaderProgram = ShaderProgram("assets/shaders/opengl-demo/demo.vert",
-                                  "assets/shaders/opengl-demo/demo.frag");
-    dayTexture = Texture("assets/textures/keep_baked_day.png", GL_RGB);
-    nightTexture = Texture("assets/textures/keep_baked_night.png", GL_RGB);
-    mesh = Mesh("assets/meshes/keep.obj");
+    shaderProgram = ShaderProgram("assets/shaders/opengl-demo/shading.vert",
+                                  "assets/shaders/opengl-demo/shading.frag");
+
+    lampProgram = ShaderProgram("assets/shaders/opengl-demo/shading.vert",
+                                "assets/shaders/opengl-demo/shading_lamp.frag");
+
+    {
+      cube = Mesh("assets/meshes/cube.obj");
+      glm::mat4 mat = glm::mat4(1.0f);
+      mat = glm::translate(mat, {-2.0f, 1.0f, -1.0f});
+      mat = glm::rotate(mat, glm::radians(35.0f), {0.0f, 1.0f, 0.0f});
+      cubeMat = mat;
+    }
+
+    {
+      sphere = Mesh("assets/meshes/icosphere.obj");
+      glm::mat4 mat = glm::mat4(1.0f);
+      mat = glm::translate(mat, {2.0f, 1.0f, -1.0f});
+      sphereMat = mat;
+    }
+
+    {
+      monkey = Mesh("assets/meshes/suzanne.obj");
+      glm::mat4 mat = glm::mat4(1.0f);
+      mat = glm::translate(mat, {0.0f, 1.0f, 2.0f});
+      monkeyMat = mat;
+    }
+
+    {
+      plane = Mesh("assets/meshes/plane.obj");
+      glm::mat4 mat = glm::mat4(1.0f);
+      mat = glm::scale(mat, {5.0f, 5.0f, 5.0f});
+      planeMat = mat;
+    }
+
+    {
+      glm::mat4 mat = glm::mat4(1.0f);
+      mat = glm::translate(mat, {3.0f, 5.0f, 5.0f});
+      mat = glm::scale(mat, {0.2f, 0.2f, 0.2f});
+      lampMat = mat;
+    }
   }
 
   void init() {
     initWindow();
     loadAssets();
-    camera = Camera(glm::vec3(0.0f, 20.0f, 30.0f), -90, -25);
+    camera = Camera(glm::vec3(0.0f, 5.0f, 12.0f), -90, -20);
     gui = GUI(window);
 
     // OpenGL config
@@ -135,6 +181,16 @@ private:
     }
   }
 
+  void processGUI() {
+    if (gui.data.wireframeMode) {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    } else {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+    gui.data.fov = fov;
+  }
+
   void mainLoop() {
     float tsPrev = 0;
 
@@ -144,30 +200,12 @@ private:
       tsPrev = ts;
 
       processInput(dt);
+      processGUI();
 
-      if (gui.data.wireframeMode) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-      } else {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-      }
-
-      gui.data.fov = fov;
-
-      // render
       glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      // use shader
       glUseProgram(shaderProgram);
-
-      float dayNight = sin(ts / 2.0f) * 5.0f + 0.5f;
-      shaderProgram.setFloat("dayNight", dayNight);
-
-      shaderProgram.setTexture("tex1", 0, dayTexture);
-      shaderProgram.setTexture("tex2", 1, nightTexture);
-
-      glm::mat4 model = glm::mat4(1.0f);
-      shaderProgram.setMatrix("model", glm::value_ptr(model));
 
       glm::mat4 view = camera.getViewMatrix();
       shaderProgram.setMatrix("view", glm::value_ptr(view));
@@ -177,8 +215,24 @@ private:
           100.0f);
       shaderProgram.setMatrix("projection", glm::value_ptr(projection));
 
-      // draw
-      mesh.draw();
+      shaderProgram.setVec3("objectColor", 0.9f, 0.5f, 0.3f);
+      shaderProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+
+      shaderProgram.setMatrix("model", glm::value_ptr(monkeyMat));
+      monkey.draw();
+      shaderProgram.setMatrix("model", glm::value_ptr(cubeMat));
+      cube.draw();
+      shaderProgram.setMatrix("model", glm::value_ptr(sphereMat));
+      sphere.draw();
+      shaderProgram.setMatrix("model", glm::value_ptr(planeMat));
+      plane.draw();
+
+      glUseProgram(lampProgram);
+      lampProgram.setMatrix("model", glm::value_ptr(lampMat));
+      lampProgram.setMatrix("view", glm::value_ptr(view));
+      lampProgram.setMatrix("projection", glm::value_ptr(projection));
+      lampProgram.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+      sphere.draw();
 
       gui.draw();
 

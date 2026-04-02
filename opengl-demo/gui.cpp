@@ -48,10 +48,7 @@ void GUI::draw() {
       ImGui::PushID(name.c_str());
 
       if (ImGui::CollapsingHeader(name.c_str())) {
-        ImGui::ColorEdit3("Diffuse", glm::value_ptr(one->diffuse),
-                          ImGuiColorEditFlags_NoInputs |
-                              ImGuiColorEditFlags_Float |
-                              ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::Image(ImTextureID(one->diffuse), {64, 64});
         ImGui::ColorEdit3("Specular", glm::value_ptr(one->specular),
                           ImGuiColorEditFlags_NoInputs |
                               ImGuiColorEditFlags_Float |

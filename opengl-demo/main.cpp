@@ -107,7 +107,8 @@ private:
       mat = glm::translate(mat, {-2.0f, 1.0f, -1.0f});
       mat = glm::rotate(mat, glm::radians(35.0f), {0.0f, 1.0f, 0.0f});
       cubeMatrix = mat;
-      cubeMaterial = {.diffuse = {0.66f, 0.27f, 0.14f},
+      cubeMaterial = {.diffuse =
+                          Texture("assets/textures/box_diffuse.png", GL_RGB),
                       .specular = {0.7f, 0.7f, 0.7f},
                       .shininess = 6};
     }
@@ -118,9 +119,10 @@ private:
       mat = glm::translate(mat, {2.0f, 2.5f, -1.0f});
       mat = glm::scale(mat, {0.5f, 0.5f, 0.5f});
       sphereMatrix = mat;
-      sphereMaterial = {.diffuse = {1.0f, 0.82f, 0.41f},
-                        .specular = {1.0f, 1.0f, 1.0f},
-                        .shininess = 128};
+      sphereMaterial = {
+          .diffuse = Texture("assets/textures/sphere_diffuse.png", GL_RGB),
+          .specular = {1.0f, 1.0f, 1.0f},
+          .shininess = 128};
     }
 
     {
@@ -128,9 +130,10 @@ private:
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::translate(mat, {0.0f, 1.0f, 2.0f});
       monkeyMatrix = mat;
-      monkeyMaterial = {.diffuse = {0.46f, 0.27f, 0.17f},
-                        .specular = {0.1f, 0.1f, 0.1f},
-                        .shininess = 1};
+      monkeyMaterial = {
+          .diffuse = Texture("assets/textures/monkey_diffuse.png", GL_RGB),
+          .specular = {0.1f, 0.1f, 0.1f},
+          .shininess = 1};
     }
 
     {
@@ -138,7 +141,8 @@ private:
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::scale(mat, {5.0f, 5.0f, 5.0f});
       planeMatrix = mat;
-      planeMaterial = {.diffuse = {0.4f, 0.4f, 0.45f},
+      planeMaterial = {.diffuse =
+                           Texture("assets/textures/plane_diffuse.png", GL_RGB),
                        .specular = {0.8f, 0.8f, 0.8f},
                        .shininess = 10};
     }
@@ -148,9 +152,10 @@ private:
       glm::mat4 mat = glm::mat4(1.0f);
       mat = glm::translate(mat, {2.0f, 0.0f, -1.0f});
       barrelMatrix = mat;
-      barrelMaterial = {.diffuse = {0.62f, 0.40f, 0.18f},
-                        .specular = {0.9f, 0.9f, 0.9f},
-                        .shininess = 20};
+      barrelMaterial = {
+          .diffuse = Texture("assets/textures/barrel_diffuse.png", GL_RGB),
+          .specular = {0.9f, 0.9f, 0.9f},
+          .shininess = 20};
     }
 
     {

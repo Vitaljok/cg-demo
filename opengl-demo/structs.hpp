@@ -3,14 +3,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
+#include "texture.hpp"
 
 struct Material {
-  glm::vec3 diffuse;
+  Texture diffuse;
   glm::vec3 specular;
   float shininess;
 
   void use(ShaderProgram shader) {
-    shader.setVec3("material.diffuse", glm::value_ptr(diffuse));
+    shader.setTexture("material.diffuse", 0, diffuse);
     shader.setVec3("material.specular", glm::value_ptr(specular));
     shader.setFloat("material.shininess", shininess);
   }

@@ -2,9 +2,10 @@
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
 
 struct Material {
-  vec3 diffuse;
+  sampler2D diffuse;
   vec3 specular;
   float shininess;
 };
@@ -23,12 +24,12 @@ layout(location = 10) uniform vec3 cameraPos;
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-  vec3 ambient = light.ambient * material.diffuse;
+  vec3 ambient = light.ambient * texture(material.diffuse, uv).rgb;
 
   vec3 norm = normalize(normal);
   vec3 lightDir = normalize(light.pos - pos);
   float diffuseAmount = max(dot(norm, lightDir), 0.0);
-  vec3 diffuse = diffuseAmount * light.diffuse * material.diffuse;
+  vec3 diffuse = diffuseAmount * light.diffuse * texture(material.diffuse, uv).rgb;
 
   vec3 cameraDir = normalize(cameraPos - pos);
   vec3 reflectDir = reflect(-lightDir, norm);

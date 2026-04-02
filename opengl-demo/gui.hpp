@@ -1,15 +1,15 @@
 #pragma once
 
+#include "structs.hpp"
 #include <array>
+#include <map>
 
 struct GLFWwindow;
 
 struct GUIData {
   float fov;
   bool wireframeMode = false;
-  float *materialDiffuse;
-  float *materialSpecular;
-  float *materialShininess;
+  std::map<std::string, Material *> materials;
   float *lightAmbient;
   float *lightDiffuse;
   float *lightSpecular;

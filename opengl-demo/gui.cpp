@@ -43,14 +43,23 @@ void GUI::draw() {
     ImGui::Checkbox("Wireframe mode", &data.wireframeMode);
   }
 
-  if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
-    ImGui::ColorEdit3("Diffuse##mat", data.materialDiffuse,
-                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
-                          ImGuiColorEditFlags_PickerHueWheel);
-    ImGui::ColorEdit3("Specular##mat", data.materialSpecular,
-                      ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float |
-                          ImGuiColorEditFlags_PickerHueWheel);
-    ImGui::DragFloat("Shininess##mat", data.materialShininess, 1.0, 1.0, 250.0);
+  if (ImGui::CollapsingHeader("Materials", ImGuiTreeNodeFlags_DefaultOpen)) {
+    for (auto &[name, one] : data.materials) {
+      ImGui::PushID(name.c_str());
+
+      if (ImGui::CollapsingHeader(name.c_str())) {
+        ImGui::ColorEdit3("Diffuse", glm::value_ptr(one->diffuse),
+                          ImGuiColorEditFlags_NoInputs |
+                              ImGuiColorEditFlags_Float |
+                              ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::ColorEdit3("Specular", glm::value_ptr(one->specular),
+                          ImGuiColorEditFlags_NoInputs |
+                              ImGuiColorEditFlags_Float |
+                              ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::DragFloat("Shininess", &one->shininess, 1.0, 1.0, 250.0);
+      }
+      ImGui::PopID();
+    }
   }
 
   if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen)) {

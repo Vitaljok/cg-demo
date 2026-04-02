@@ -1,18 +1,18 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include "shader.hpp"
 #include "texture.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 struct Material {
   Texture diffuse;
-  glm::vec3 specular;
+  Texture specular;
   float shininess;
 
   void use(ShaderProgram shader) {
     shader.setTexture("material.diffuse", 0, diffuse);
-    shader.setVec3("material.specular", glm::value_ptr(specular));
+    shader.setTexture("material.specular", 1, specular);
     shader.setFloat("material.shininess", shininess);
   }
 };

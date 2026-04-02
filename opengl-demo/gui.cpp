@@ -47,12 +47,10 @@ void GUI::draw() {
     for (auto &[name, one] : data.materials) {
       ImGui::PushID(name.c_str());
 
-      if (ImGui::CollapsingHeader(name.c_str())) {
+      if (ImGui::CollapsingHeader(name.c_str())) {        
         ImGui::Image(ImTextureID(one->diffuse), {64, 64});
-        ImGui::ColorEdit3("Specular", glm::value_ptr(one->specular),
-                          ImGuiColorEditFlags_NoInputs |
-                              ImGuiColorEditFlags_Float |
-                              ImGuiColorEditFlags_PickerHueWheel);
+        ImGui::SameLine();
+        ImGui::Image(ImTextureID(one->specular), {64, 64});
         ImGui::DragFloat("Shininess", &one->shininess, 1.0, 1.0, 250.0);
       }
       ImGui::PopID();

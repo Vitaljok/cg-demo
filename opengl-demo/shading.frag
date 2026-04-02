@@ -6,7 +6,7 @@ layout(location = 2) in vec2 uv;
 
 struct Material {
   sampler2D diffuse;
-  vec3 specular;
+  sampler2D specular;
   float shininess;
 };
 
@@ -35,7 +35,7 @@ void main() {
   vec3 reflectDir = reflect(-lightDir, norm);
   float specularAmount = max(dot(cameraDir, reflectDir), 0.0);
   specularAmount = pow(specularAmount, material.shininess);
-  vec3 specular = specularAmount * light.specular * material.specular;
+  vec3 specular = specularAmount * light.specular * texture(material.specular, uv).rgb;
 
   fragColor = vec4(ambient + diffuse + specular, 1.0);
 }

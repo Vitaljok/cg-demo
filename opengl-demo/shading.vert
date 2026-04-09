@@ -13,8 +13,8 @@ layout(location = 1) out vec3 normal;
 layout(location = 2) out vec2 uv;
 
 void main() {
-  gl_Position = projection * view * model * vec4(inPos.xyz, 1.0);
-  pos = (model * vec4(inPos.xyz, 1.0)).xyz;
+  gl_Position = projection * view * model * vec4(inPos, 1.0);
+  pos = vec3(model * vec4(inPos, 1.0));
   normal = mat3(transpose(inverse(model))) * inNormal;
   uv = inUV;
 }

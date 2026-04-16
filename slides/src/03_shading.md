@@ -41,6 +41,10 @@ public:
 ```
 --cols--
 
+Notes:
+- better organization of methods
+- access to all variables
+
 --v--
 
 ## Mesh
@@ -59,6 +63,9 @@ class Mesh {
     void draw();
 };
 ```
+
+Notes:
+- VAO, VBO, EBO, and OBJ file loading extracted to separate class
 
 --v--
 
@@ -79,13 +86,18 @@ auto loc = glGetUniformLocation(shader, name);
 glUniform1f(loc, value);
 ```
 
+Notes:
+- utility functions for setting uniforms;
+- `glGetUniformLocation` instead of hard coded locations;
+- some "caching" for locations (maybe faster).
+
 --s--
 
 ## Camera movement
 
 --cols--
 
-![](img/camera_axes.svg)
+![](img/camera-axes.svg)
 
 --c--
 
@@ -106,6 +118,12 @@ if (glfwGetKey(window, GLFW_KEY_D)) {
 
 --cols--
 
+Notes:
+- `Camera` class encapsulates view matrix updates;
+- it stores information about virtual camera;
+- position is updated according to `front` and `right` vectors;
+- WASD controls (and QE for up/down movement).
+
 --v--
 
 ## Camera rotation
@@ -118,7 +136,7 @@ if (glfwGetKey(window, GLFW_KEY_D)) {
 
 ```c++
 glfwGetCursorPos(window, &cursor.x, &cursor.y);
-glm::dvec2 offset = cursor - lastCursor;
+glm::dvec2 offset = cursor - prevCursor;
 
 yaw += offset.x * sensitivity;
 pitch += offset.y * sensitivity;
@@ -133,8 +151,10 @@ up = glm::cross(right, front);
 --cols--
 
 Notes:
+- rotation angles is updated from mouse movement (when RMB is pressed);
+- vectors are recalculated from angles;
 - safety limits for pitch;
-- vectors should be normalized.
+- vectors normalized.
 
 --s--
 
@@ -147,8 +167,8 @@ Notes:
 > fast, portable, renderer agnostic, and self-contained
 
 Notes:
-- Every frame the GUI is rendered in forms of triangles. 
-- So called immediate user interface.
+- every frame the GUI is rendered as vertex buffer (textured triangles);
+- so called immediate user interface.
 
 --v--
 
@@ -171,6 +191,11 @@ ImGui::End();
 
 ImGui::Render();
 ```
+Notes:
+- `Begin` and `End` create window;
+- controls are "stacked" one after another;
+- some "plumbing" is needed for data excange with main application.
+
 --s--
 
 ## Object colors
@@ -179,9 +204,10 @@ ImGui::Render();
 ![](img/object-light-colors.svg)
 
 Notes:
-- objects *absorb* specific light wavelengths
-- the rest is *reflected* to the viewer
-- this is perceived object color
+- objects *absorb* specific light wavelengths;
+- the rest is *reflected* to the viewer;
+- this is perceived object color;
+- in this case we assume the light has all wavelenghts (white).
 
 --v--
 
@@ -190,9 +216,10 @@ Notes:
 ![](img/object-light-colors-selected.svg)
 
 Notes:
-- in case of colored lights the idea stays the same
-- blue box in blue light is perceived as bright as light (white)
-- orange box absorbs all blue light, thus perceived as no light (black)
+- in case of colored lights the idea stays the same;
+- blue box in blue light is perceived as bright as light (white);
+- orange box absorbs all blue light, thus reflects no light (perceived as black);
+- ofcourse whole world is lit with blue light.
 
 --v--
 
@@ -207,7 +234,11 @@ $$
 ![](img/object-light-colors-math.svg)
 
 Notes:
-- to emulate light absorption we can use vector element-wise multiplication
+- it is very common to separate light color and object color;
+- to emulate reflected light we can use vector element-wise multiplication;
+- blue object in white light is perceived as blue;
+- white object in blue light is perceived as blue (as well as the rest of world);
+- orange object in blue light is perceived as black;
 
 --s--
 
@@ -221,7 +252,8 @@ Camera controls and GUI (already exists).
 
 
 Notes:
-- flat vs curved surfaces
+- flat vs curved surfaces;
+- indication of how the light shines into the scene;
 
 --v--
 
@@ -247,10 +279,10 @@ shaderProgram.setMatrix("model", glm::value_ptr(sphereMatrix));
 sphere.draw();
 ```
 Notes: 
-- load all meshes
-- fill all transformation matrices
-- draw all objects
-- lamp reuses sphere mesh
+- load all meshes;
+- fill all transformation matrices;
+- draw all objects;
+- lamp reuses sphere mesh;
 
 --v--
 
@@ -277,8 +309,10 @@ sphere.draw();
 ```
 
 Notes:
-- regular objects use shading 
-- lamp use fixed color
+- regular objects use shading algorithm;
+- lamp use fixed color (or something fancy);
+- possible solution is to have multiple shader programs;
+- can be improved by compiling vertex shader only once;
 
 --v--
 
@@ -299,6 +333,10 @@ void main() {
 }
 ```
 
+Notes:
+- only position attribute for now;
+- and all MVP transformation matrices.
+
 --v--
 
 ## Fragment shader
@@ -317,6 +355,10 @@ void main() {
 }
 ```
 
+Notes:
+- two parameters (uniforms): object and light colors;
+- output color is RGBA, thus `vec4`;
+
 --v--
 
 ## Lamp shader
@@ -333,6 +375,9 @@ void main() {
     fragColor = vec4(lightColor, 1.0);
 }
 ```
+
+Notes:
+- only flat light color for the whole object;
 
 --v--
 
@@ -354,7 +399,11 @@ Empirical model of surface illumination.
 Combines *ambient*, *diffuse* and *specular* lighting components.
 
 Notes:
-- empirical = based on observations, not in math
+- empirical = based on observations, not in physics;
+- for visual appearance;
+- ambient = окружающее = apkārtējā
+- diffuse = диффузное = izkliedētā
+- specular = зеркальное = spoguļa
 
 --v--
 
@@ -363,8 +412,8 @@ Notes:
 ![](img/phong-shading-ambient.svg)
 
 Notes:
-- constant light scattered between all objects
-- "default" light instead of pitch black darkness
+- constant light scattered across the scene;
+- "default" light instead of pitch black darkness;
 
 --v--
 
@@ -382,10 +431,16 @@ void main() {
     vec3 ambient = 0.1 * lightColor * objectColor;
 
     vec3 diffuse = vec3(0);
+
     vec3 specular = vec3(0);
+
     fragColor = vec4(ambient + diffuse + specular, 1.0);
 }
 ```
+Notes:
+- usually ambient light is quite dim, thus `0.1` coefficient;
+- other components are set to zero for now.
+
 --v--
 
 ## Shading progress - ambient
@@ -400,7 +455,9 @@ void main() {
 ![](img/phong-shading-diffuse.svg)
 
 Notes:
-- surfaces facing towards light source are illuminated more
+- amount of light hitting the surface depends on angle towards the light source;
+- surfaces facing towards the light source are illuminated more;
+- surfaces facing away from the light source are illuminated less;
 
 --v--
 
@@ -412,7 +469,7 @@ Notes:
 - normal vectors can be loaded from mesh;
 - light position can be provided via uniforms;
 - pixel position can be calculated from vertex positions;
-- world coordinates are easier to use.
+- world coordinates are easier to use, instead of view or projection coordinates.
 
 --v--
 
@@ -440,6 +497,8 @@ struct VertexData {
     ...
   }
 ```
+Notes:
+- normals can be calculated for each triangle, but it is more convenient to read them from OBJ file;
 
 --cols--
 
@@ -489,9 +548,11 @@ void main() {
 }
 ```
 Notes:
+- the definition of dot product between two vectors contains `cos` of angle;
 - `normalize` transforms vector to unit length;
 - `dot` product calculates cosine of angle b/w vectors;
-- `diffuseAmount` is in clamped to range [0, 1].
+- `diffuseAmount` is then clamped to range [0, 1];
+- negative `cos` values correspond to angles of 90+ degrees, i.e. triangles facing away from the light source;
 
 --v--
 
@@ -514,6 +575,13 @@ void main() {
 }
 ```
 
+Notes:
+- small problem arises when objects are scaled non-uniformly (e.g. along single axis);
+- normal vector has to be adjusted for the scaling;
+- math does the trick;
+- can be extracted into dedicated `normal` tranfrom matrix for better performance;
+- `mat3` because we don't need translation;
+
 --s--
 
 ## Specular lighting
@@ -521,6 +589,7 @@ void main() {
 ![](img/phong-shading-specular.svg)
 
 Notes:
+- some light reflects from the surfaces;
 - some reflections may get into camera;
 - reflections aligned with view line look brighter.
 
@@ -556,7 +625,8 @@ void main() {
 
 Notes:
 - `reflect` needs the vectors pointing towards the surface, thus `-lightDir`;
-- `shininess` easier to define via `pow` function.
+- `shininess` easier to define via `pow` function;
+- we want subtle specular light, thus `0.5` coefficient.
 
 --v--
 
@@ -575,7 +645,9 @@ Notes:
 
 Notes:
 - why triangles are still visible?
-
+- normal vectors are provided for each vertex;
+- they are interpolated for each fragment;
+- if the is no transition, the object appears smooth;
 
 --v--
 ## Smooth and flat shading in Blender
@@ -611,10 +683,13 @@ void main() {
   fragColor = vec4(ambient + diffuse + specular, 1.0);
 }
 ```
+Notes:
+- hard-coded parameters are bad practice;
+- also scalar coefficients imply the same effect for the whole spectrum;
 
 --v--
 
-## Light and Material properties (as-is)
+## Hard-coded parameters
 
 | Component | Light              | Material      |
 | --------- | ------------------:| -------------:|
@@ -628,7 +703,7 @@ Notes:
 
 --v--
 
-## Light and Material properties (to-be)
+## Light and Material properties
 
 | Component | Light      | Material  |
 | --------- | ----------:| ---------:|
@@ -693,6 +768,9 @@ shaderProgram.setVec3("light.diffuse",  glm::value_ptr(light.diffuse));
 shaderProgram.setVec3("light.specular", glm::value_ptr(light.specular));
 ```
 
+Notes:
+- technically there are ways to upload whole struct as continous buffer of bytes;
+
 --v--
 
 ## Fragment shader
@@ -710,6 +788,9 @@ void main() {
     ...
 }
 ```
+
+Notes:
+- `location`'s are still occupied by struct fields. 
 
 --v--
 
@@ -753,7 +834,7 @@ sphere.draw();
 
 Notes:
 - each object has its own material;
-- but only single color per object.
+- but only single color per object;
 
 --s--
 
@@ -781,6 +862,9 @@ cubeMaterial = {
 ```
 
 --cols--
+
+Notes:
+- why not use whole texture instead of single color?
 
 --v--
 
@@ -853,5 +937,8 @@ cubeMaterial = {
 --v--
 
 ## Diffuse and specular maps added
-![](img/demo/09-shading-specular-maps.png)
-<!-- .element class="r-stretch" -->
+
+<div class="r-stack r-stretch">
+    <img src="img/demo/09-shading-specular-maps.png">
+    <img src="img/demo/09-shading-diffuse-maps.png" class="fragment">
+</div>
